@@ -5,10 +5,12 @@ class FallingObject {
   final double left;
   Color color;
   double opacity;
+  GlobalKey key;
 
-  FallingObject(
-      {required this.top,
-      required this.left,
-      required this.color,
-      required this.opacity});
+  FallingObject({
+    required this.top,
+    required this.left,
+    required this.color,
+    required this.opacity,
+  }) : key = GlobalKey();
 }
