@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:spectrum_chase/falling_objects.dart';
+import 'package:spectrum_chase/pages/falling_objects.dart';
+import 'package:spectrum_chase/pages/main_page.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -17,9 +18,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: FallingObjectsPage(),
+        body: MainPage(),
       ),
     );
   }
