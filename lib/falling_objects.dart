@@ -89,33 +89,33 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   }
 
   void detectCollisions() {
-    // final double sliderBottom = MediaQuery.of(context).size.height - 30;
-    //
-    // final basketBox = Rect.fromLTWH(
-    //   basketPosition,
-    //   sliderBottom,
-    //   80,
-    //   80,
-    // );
-    //
-    // for (int i = 0; i < fallingObjects.length; i++) {
-    //   final objectBox = Rect.fromLTWH(
-    //     fallingObjects[i].left,
-    //     fallingObjects[i].top,
-    //     objectSize,
-    //     objectSize,
-    //   );
-    //
-    //   if (isBoxVisible(objectBox, sliderBottom) &&
-    //       boxIntersect(basketBox, objectBox)) {
-    //     if (selectedColor == fallingObjects[i].color) {
-    //       score++;
-    //     } else {
-    //       resetGame();
-    //       gameOver = true;
-    //     }
-    //   }
-    // }
+    final double sliderBottom = MediaQuery.of(context).size.height - 30;
+
+    final basketBox = Rect.fromLTWH(
+      basketPosition,
+      sliderBottom,
+      80,
+      80,
+    );
+
+    for (int i = 0; i < fallingObjects.length; i++) {
+      final objectBox = Rect.fromLTWH(
+        fallingObjects[i].left,
+        fallingObjects[i].top,
+        objectSize,
+        objectSize,
+      );
+
+      if (isBoxVisible(objectBox, sliderBottom) &&
+          boxIntersect(basketBox, objectBox)) {
+        if (selectedColor == fallingObjects[i].color) {
+          score++;
+        } else {
+          resetGame();
+          gameOver = true;
+        }
+      }
+    }
   }
 
   bool boxIntersect(Rect a, Rect b) {
