@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:spectrum_chase/models/falling_object.dart';
 
 class FallingObjectsPage extends StatefulWidget {
@@ -59,7 +60,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
         FallingObject(
           opacity: 1,
           color: generateRandomColorFromList(),
-          top: 0,
+          top: 80,
           left: getRandomPosition(),
         ),
       );
@@ -88,33 +89,33 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   }
 
   void detectCollisions() {
-    final double sliderBottom = MediaQuery.of(context).size.height - 30;
-
-    final basketBox = Rect.fromLTWH(
-      basketPosition,
-      sliderBottom,
-      80,
-      80,
-    );
-
-    for (int i = 0; i < fallingObjects.length; i++) {
-      final objectBox = Rect.fromLTWH(
-        fallingObjects[i].left,
-        fallingObjects[i].top,
-        objectSize,
-        objectSize,
-      );
-
-      if (isBoxVisible(objectBox, sliderBottom) &&
-          boxIntersect(basketBox, objectBox)) {
-        if (selectedColor == fallingObjects[i].color) {
-          score++;
-        } else {
-          resetGame();
-          gameOver = true;
-        }
-      }
-    }
+    // final double sliderBottom = MediaQuery.of(context).size.height - 30;
+    //
+    // final basketBox = Rect.fromLTWH(
+    //   basketPosition,
+    //   sliderBottom,
+    //   80,
+    //   80,
+    // );
+    //
+    // for (int i = 0; i < fallingObjects.length; i++) {
+    //   final objectBox = Rect.fromLTWH(
+    //     fallingObjects[i].left,
+    //     fallingObjects[i].top,
+    //     objectSize,
+    //     objectSize,
+    //   );
+    //
+    //   if (isBoxVisible(objectBox, sliderBottom) &&
+    //       boxIntersect(basketBox, objectBox)) {
+    //     if (selectedColor == fallingObjects[i].color) {
+    //       score++;
+    //     } else {
+    //       resetGame();
+    //       gameOver = true;
+    //     }
+    //   }
+    // }
   }
 
   bool boxIntersect(Rect a, Rect b) {
@@ -186,6 +187,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                       colors: [Color(0xff171648), Color(0xff301585)])),
               child: Stack(
                 children: [
+                  /// Falling Objects ///
                   ...fallingObjects.map((object) {
                     return Positioned(
                       top: object.top,
@@ -196,7 +198,8 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                           key: object.key,
                           width: objectSize,
                           height: objectSize,
-                          decoration: BoxDecoration(color: object.color),
+                          decoration: BoxDecoration(color: object.color,
+                              borderRadius: const BorderRadius.all(Radius.circular(4))),
                           child: Center(
                             child: Image.asset('lib/assets/2938687.png'),
                           ),
@@ -204,26 +207,83 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                       ),
                     );
                   }).toList(),
+                  /// Score and top elements ///
                   Align(
                     alignment: Alignment.topCenter,
                     child: Container(
-                      margin: const EdgeInsets.only(top: 20),
                       height: 80,
-                      decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        image: DecorationImage(
-                          image: AssetImage('lib/assets/4399411.png'),
-                          fit: BoxFit.scaleDown,
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '$score',
-                          style: const TextStyle(fontSize: 20),
-                        ),
-                      ),
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.transparent,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: const Icon(
+                              Icons.home,
+                            size: 35,
+                            color: Colors.white,),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '$score',
+                                style: GoogleFonts.raleway(
+                                    textStyle: Theme.of(context).textTheme.displayLarge,
+                                    color: Colors.white,
+                                    fontSize: 39,
+                                    fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              Text(
+                                'Score'.toUpperCase(),
+                                style: GoogleFonts.raleway(
+                                  color: Colors.white,
+                                  textStyle: Theme.of(context).textTheme.displayLarge,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Catch',
+                                  style: GoogleFonts.raleway(
+                                      textStyle: Theme.of(context).textTheme.displayLarge,
+                                      color: Colors.white,
+                                      fontSize: 13.76,
+                                      fontWeight: FontWeight.w500
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Container(
+                                    width: objectSize/1.5,
+                                    height: objectSize/1.5,
+                                    decoration: BoxDecoration(color: selectedColor,
+                                    borderRadius: const BorderRadius.all(Radius.circular(4))),
+                                    child: Center(
+                                      child: Image.asset('lib/assets/2938687.png'),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
                     ),
                   ),
+                  /// Basket ///
                   Positioned(
                     bottom: 10,
                     left: basketPosition,
