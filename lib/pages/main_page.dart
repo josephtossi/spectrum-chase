@@ -1,9 +1,15 @@
+import 'dart:math';
+import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spectrum_chase/data/data_storage_service.dart';
 import 'package:spectrum_chase/pages/falling_objects.dart';
 import 'package:spectrum_chase/pages/highest_scores_page.dart';
 import 'package:spectrum_chase/pages/info_page.dart';
 import 'package:spectrum_chase/pages/settings_page.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -14,6 +20,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  List topUsersStatistics = [];
+  Map userInfo = {};
+
+  int generateRandomNumber(int min, int max) {
+    final Random random = Random();
+    return min + random.nextInt(max - min + 1);
+  }
+
   String formatNumber(int number) {
     if (number < 1000) {
       return number.toString();
@@ -26,9 +40,56 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  getUserStatistics({required DataStorageManager dataStorageManager}){
+    setState(() {
+      Map userMapSaved = dataStorageManager.getMap('user_statistics');
+      if (userMapSaved.isNotEmpty) {
+        userInfo = userMapSaved;
+      } else {
+        userInfo = {
+          'userName': faker.internet.userName(),
+          'score': 0
+        };
+        dataStorageManager.setMap('user_statistics', userInfo);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      DataStorageManager dataStorageManager = DataStorageManager(prefs);
+
+      /// Best Scores Logic ///
+      List usersSaved = dataStorageManager.getList('top_users_statistics');
+      if (usersSaved.isNotEmpty) {
+        topUsersStatistics = usersSaved;
+      } else {
+        for (int i = 0; i < 20; i++) {
+          topUsersStatistics.add({
+            'userName': faker.internet.userName(),
+            'score': generateRandomNumber(230, 5000)
+          });
+        }
+        dataStorageManager.setList('top_users_statistics', topUsersStatistics);
+      }
+      topUsersStatistics.sort((a, b) => b['score'].compareTo(a['score']));
+
+      /// Main User Logic ///
+      Map userMapSaved = dataStorageManager.getMap('user_statistics');
+      if (userMapSaved.isNotEmpty) {
+        userInfo = userMapSaved;
+      } else {
+        userInfo = {
+          'userName': faker.internet.userName(),
+          'score': 0
+        };
+        dataStorageManager.setMap('user_statistics', userInfo);
+      }
+      setState(() {});
+    });
   }
 
   @override
@@ -128,22 +189,35 @@ class _MainPageState extends State<MainPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Your Best Score',
-                          style: GoogleFonts.raleway(
-                              textStyle:
-                                  Theme.of(context).textTheme.displayLarge,
-                              color: const Color(0xffffffff),
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          formatNumber(200),
+                          'Your Score',
+                          // '${userInfo.isNotEmpty ? userInfo['userName'] : 'Your Best Score'}',
                           style: GoogleFonts.raleway(
                               textStyle:
                                   Theme.of(context).textTheme.displayLarge,
                               color: Colors.white,
-                              fontSize: 35,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold),
+                        ),
+                        VisibilityDetector(
+                          key: const Key('user-score'),
+                          onVisibilityChanged: (visibilityInfo) async {
+                            var visiblePercentage = visibilityInfo.visibleFraction * 100;
+                            if(visiblePercentage > 0){
+                              final SharedPreferences prefs = await SharedPreferences.getInstance();
+                              DataStorageManager dataStorageManager = DataStorageManager(prefs);
+                              getUserStatistics(dataStorageManager: dataStorageManager);
+                            }
+                          },
+                          child: Text(
+                            formatNumber(
+                                userInfo.isNotEmpty ? userInfo['score'] : 0),
+                            style: GoogleFonts.raleway(
+                                textStyle:
+                                    Theme.of(context).textTheme.displayLarge,
+                                color: Colors.white,
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                     ),
@@ -160,11 +234,13 @@ class _MainPageState extends State<MainPage> {
                               textStyle:
                                   Theme.of(context).textTheme.displayLarge,
                               color: const Color(0xffffffff),
-                              fontSize: 15,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          formatNumber(10000000),
+                          formatNumber(topUsersStatistics.isNotEmpty
+                              ? topUsersStatistics.first['score']
+                              : 0),
                           style: GoogleFonts.raleway(
                               textStyle:
                                   Theme.of(context).textTheme.displayLarge,
@@ -191,11 +267,16 @@ class _MainPageState extends State<MainPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SettingsPage(),
+                            builder: (context) => SettingsPage(
+                              userInfo: userInfo,
+                              highestScore: topUsersStatistics.isNotEmpty
+                                  ? topUsersStatistics.first['score']
+                                  : 0,
+                            ),
                           ),
                         );
                       },
@@ -217,11 +298,13 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const HighestScoresPage(),
+                            builder: (context) => HighestScoresPage(
+                                userStatistics: userInfo,
+                                topUsersStatistics: topUsersStatistics),
                           ),
                         );
                       },
@@ -241,7 +324,7 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(

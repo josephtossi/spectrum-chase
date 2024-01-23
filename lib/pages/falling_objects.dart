@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spectrum_chase/models/falling_object.dart';
+import 'package:spectrum_chase/pages/settings_page.dart';
 
 import 'game_over.dart';
 
@@ -13,9 +14,10 @@ class FallingObjectsPage extends StatefulWidget {
   _FallingObjectsPageState createState() => _FallingObjectsPageState();
 }
 
-double objectSpeed = 6.0;
+double objectSpeed = 5.5;
 
 class _FallingObjectsPageState extends State<FallingObjectsPage> {
+  bool showInstructions = false;
   bool isPaused = false;
   double basketPosition = 0.0;
   double objectSize = 40.0;
@@ -34,7 +36,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   void initPlayer() {
     advancedPlayer = AudioPlayer();
     effectsPlayer = AudioPlayer();
-    advancedPlayer.play(AssetSource(gameMusicString),volume: .4);
+    advancedPlayer.play(AssetSource(gameMusicString),volume: musicVolume);
     advancedPlayer.onPlayerStateChanged.listen(
           (it) {
             switch (it) {
@@ -47,7 +49,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
             break;
           case PlayerState.completed:
             if(!gameOver){
-              advancedPlayer.play(AssetSource(gameMusicString),volume: .4);
+              advancedPlayer.play(AssetSource(gameMusicString),volume: musicVolume);
             }else{
               advancedPlayer.stop();
             }
@@ -77,7 +79,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
       if(isPaused){
         advancedPlayer.stop();
       }else{
-        advancedPlayer.play(AssetSource(gameMusicString),volume: .4);
+        advancedPlayer.play(AssetSource(gameMusicString),volume: musicVolume);
       }
     });
   }
@@ -85,16 +87,17 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   void resetGame() {
     setState(() {
       changeSelectedColor();
-      objectSpeed = 5;
+      objectSpeed = 5.5;
       fallingObjects.clear();
       score = 0;
       basketPosition = (MediaQuery.of(context).size.width / 2) - 42.5;
       initPlayer();
+      showInstructionsFunction();
     });
   }
 
   void startFallingObjects() {
-    const duration = Duration(milliseconds: 800);
+    Duration duration = Duration(milliseconds: objectSpeed > 8 ? 600 : 800);
     Timer.periodic(duration, (timer) {
       if (!isPaused) {
         generateFallingObject();
@@ -147,7 +150,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
           .map((object) {
             return FallingObject(
               opacity: object.opacity,
-              top: object.top + objectSpeed,
+              top: object.top + (objectSpeed > 8 ? objectSpeed/2 : objectSpeed),
               color: object.color,
               left: object.left,
             );
@@ -174,19 +177,20 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
         objectSize,
         objectSize,
       );
-
       if (isBoxVisible(objectBox, sliderBottom) &&
           boxIntersect(basketBox, objectBox)) {
         if (selectedColor == fallingObjects[i].color) {
-          try{effectsPlayer.play(AssetSource(bonusMusicString));}catch(e){}
+          try{effectsPlayer.play(AssetSource(bonusMusicString),volume: effectsVolume);}catch(e){}
           score++;
+          fallingObjects[i].opacity = 0;
           if (score % 5 == 0) {
             increaseSpeed();
           }
         } else {
-          try{effectsPlayer.play(AssetSource(completionMusicString));}catch(e){}
+          try{effectsPlayer.play(AssetSource(completionMusicString),volume: effectsVolume);}catch(e){}
           isPaused = true;
           gameOver = true;
+          advancedPlayer.stop();
         }
       }
     }
@@ -220,10 +224,23 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
     });
   }
 
+  showInstructionsFunction(){
+    showInstructions = true;
+    isPaused = true;
+    setState(() {});
+    Timer(const Duration(seconds: 1), () {
+      setState(() {
+        showInstructions = false;
+        isPaused = false;
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      showInstructionsFunction();
       basketPosition = (MediaQuery.of(context).size.width / 2) - 42.5;
       try{initPlayer();}catch(e){}
       startFallingObjects();
@@ -384,6 +401,55 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                     ),
                   ),
                 ),
+
+                /// Color to catch dialogue ///
+                if (showInstructions)
+                  AnimatedOpacity(
+                    duration: const Duration(seconds: 1),
+                    opacity: 1.0,
+                    child: Container(
+                      color: Colors.black.withOpacity(0.8),
+                      child: Center(
+                        child: Material(
+                          color: Colors.transparent,
+                          child:  Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Try to Catch',
+                                  style: GoogleFonts.raleway(
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge,
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Container(
+                                    width: 80,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                        color: selectedColor,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(4))),
+                                    child: Center(
+                                      child:
+                                      Image.asset('lib/assets/2938687.png'),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           );

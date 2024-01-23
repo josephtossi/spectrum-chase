@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../data/data_storage_service.dart';
 
 class GameOver extends StatefulWidget {
   dynamic gameOverFunction;
@@ -12,6 +16,23 @@ class GameOver extends StatefulWidget {
 }
 
 class _GameOverState extends State<GameOver> {
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      DataStorageManager dataStorageManager = DataStorageManager(prefs);
+      Map userMapSaved = dataStorageManager.getMap('user_statistics');
+      if (userMapSaved.isNotEmpty) {
+        if (userMapSaved['score'] < widget.score) {
+          userMapSaved['score'] = widget.score;
+          dataStorageManager.setMap('user_statistics', userMapSaved);
+        }
+      }
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -32,8 +53,7 @@ class _GameOverState extends State<GameOver> {
                     textStyle: Theme.of(context).textTheme.displayLarge,
                     color: Colors.white,
                     fontSize: 39,
-                    fontWeight: FontWeight.bold
-                ),
+                    fontWeight: FontWeight.bold),
               ),
               Text(
                 'Score : ${widget.score}',
@@ -41,8 +61,7 @@ class _GameOverState extends State<GameOver> {
                     textStyle: Theme.of(context).textTheme.displayLarge,
                     color: Colors.white,
                     fontSize: 24,
-                    fontWeight: FontWeight.w400
-                ),
+                    fontWeight: FontWeight.w400),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 38.0),
@@ -64,8 +83,7 @@ class _GameOverState extends State<GameOver> {
                             textStyle: Theme.of(context).textTheme.displayLarge,
                             color: Colors.white,
                             fontSize: 20,
-                            fontWeight: FontWeight.w700
-                        ),
+                            fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
@@ -74,7 +92,7 @@ class _GameOverState extends State<GameOver> {
               Padding(
                 padding: const EdgeInsets.only(top: 15.0),
                 child: GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigator.pop(context);
                   },
                   child: Container(
@@ -93,8 +111,7 @@ class _GameOverState extends State<GameOver> {
                             textStyle: Theme.of(context).textTheme.displayLarge,
                             color: Colors.white,
                             fontSize: 20,
-                            fontWeight: FontWeight.w700
-                        ),
+                            fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
