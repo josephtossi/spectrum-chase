@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spectrum_chase/pages/falling_objects.dart';
+import 'package:spectrum_chase/pages/highest_scores_page.dart';
+import 'package:spectrum_chase/pages/info_page.dart';
+import 'package:spectrum_chase/pages/settings_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -187,49 +190,79 @@ class _MainPageState extends State<MainPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                      height: MediaQuery.of(context).size.width * .2,
-                      width: MediaQuery.of(context).size.width * .2,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [Color(0xffdf446b), Color(0xff964ed8)]),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SettingsPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: MediaQuery.of(context).size.width * .2,
+                        width: MediaQuery.of(context).size.width * .2,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(25)),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xffdf446b), Color(0xff964ed8)]),
+                        ),
+                        child: Center(
+                          child: Icon(Icons.settings,
+                              color: const Color(0xfffefefe),
+                              size: MediaQuery.of(context).size.width * .1),
+                        ),
                       ),
-                      child: Center(
-                        child: Icon(Icons.settings,
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HighestScoresPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: MediaQuery.of(context).size.width * .2,
+                        width: MediaQuery.of(context).size.width * .2,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(25)),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xffdf446b), Color(0xff964ed8)]),
+                        ),
+                        child: Icon(Icons.leaderboard,
                             color: const Color(0xfffefefe),
                             size: MediaQuery.of(context).size.width * .1),
                       ),
                     ),
-                    Container(
-                      height: MediaQuery.of(context).size.width * .2,
-                      width: MediaQuery.of(context).size.width * .2,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [Color(0xffdf446b), Color(0xff964ed8)]),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const InfoPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: MediaQuery.of(context).size.width * .2,
+                        width: MediaQuery.of(context).size.width * .2,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(25)),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xffdf446b), Color(0xff964ed8)]),
+                        ),
+                        child: Icon(Icons.info,
+                            color: const Color(0xfffefefe),
+                            size: MediaQuery.of(context).size.width * .1),
                       ),
-                      child: Icon(Icons.leaderboard,
-                          color: const Color(0xfffefefe),
-                          size: MediaQuery.of(context).size.width * .1),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.width * .2,
-                      width: MediaQuery.of(context).size.width * .2,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [Color(0xffdf446b), Color(0xff964ed8)]),
-                      ),
-                      child: Icon(Icons.info,
-                          color: const Color(0xfffefefe),
-                          size: MediaQuery.of(context).size.width * .1),
                     ),
                   ],
                 ),
