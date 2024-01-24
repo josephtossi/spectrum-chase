@@ -40,16 +40,13 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  getUserStatistics({required DataStorageManager dataStorageManager}){
+  getUserStatistics({required DataStorageManager dataStorageManager}) {
     setState(() {
       Map userMapSaved = dataStorageManager.getMap('user_statistics');
       if (userMapSaved.isNotEmpty) {
         userInfo = userMapSaved;
       } else {
-        userInfo = {
-          'userName': faker.internet.userName(),
-          'score': 0
-        };
+        userInfo = {'userName': faker.internet.userName(), 'score': 0};
         dataStorageManager.setMap('user_statistics', userInfo);
       }
     });
@@ -82,10 +79,7 @@ class _MainPageState extends State<MainPage> {
       if (userMapSaved.isNotEmpty) {
         userInfo = userMapSaved;
       } else {
-        userInfo = {
-          'userName': faker.internet.userName(),
-          'score': 0
-        };
+        userInfo = {'userName': faker.internet.userName(), 'score': 0};
         dataStorageManager.setMap('user_statistics', userInfo);
       }
       setState(() {});
@@ -135,7 +129,7 @@ class _MainPageState extends State<MainPage> {
                   margin: EdgeInsets.only(
                       right: MediaQuery.of(context).size.width * .22,
                       left: MediaQuery.of(context).size.width * .22,
-                      bottom: MediaQuery.of(context).size.width * .07),
+                      bottom: MediaQuery.of(context).size.width * .04),
                   child: Column(
                     children: [
                       Expanded(
@@ -177,8 +171,8 @@ class _MainPageState extends State<MainPage> {
           Expanded(
             flex: 1,
             child: Container(
-              margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.width * .145),
+              margin:
+                  EdgeInsets.only(top: MediaQuery.of(context).size.width * .09),
               color: Colors.transparent,
               child: Row(
                 children: [
@@ -195,17 +189,22 @@ class _MainPageState extends State<MainPage> {
                               textStyle:
                                   Theme.of(context).textTheme.displayLarge,
                               color: Colors.white,
-                              fontSize: 14,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * .033,
                               fontWeight: FontWeight.bold),
                         ),
                         VisibilityDetector(
                           key: const Key('user-score'),
                           onVisibilityChanged: (visibilityInfo) async {
-                            var visiblePercentage = visibilityInfo.visibleFraction * 100;
-                            if(visiblePercentage > 0){
-                              final SharedPreferences prefs = await SharedPreferences.getInstance();
-                              DataStorageManager dataStorageManager = DataStorageManager(prefs);
-                              getUserStatistics(dataStorageManager: dataStorageManager);
+                            var visiblePercentage =
+                                visibilityInfo.visibleFraction * 100;
+                            if (visiblePercentage > 0) {
+                              final SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              DataStorageManager dataStorageManager =
+                                  DataStorageManager(prefs);
+                              getUserStatistics(
+                                  dataStorageManager: dataStorageManager);
                             }
                           },
                           child: Text(
@@ -215,7 +214,8 @@ class _MainPageState extends State<MainPage> {
                                 textStyle:
                                     Theme.of(context).textTheme.displayLarge,
                                 color: Colors.white,
-                                fontSize: 35,
+                                fontSize:
+                                MediaQuery.of(context).size.width * .09,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -234,7 +234,8 @@ class _MainPageState extends State<MainPage> {
                               textStyle:
                                   Theme.of(context).textTheme.displayLarge,
                               color: const Color(0xffffffff),
-                              fontSize: 14,
+                              fontSize:
+                                  MediaQuery.of(context).size.width * .033,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
@@ -245,7 +246,8 @@ class _MainPageState extends State<MainPage> {
                               textStyle:
                                   Theme.of(context).textTheme.displayLarge,
                               color: Colors.white,
-                              fontSize: 35,
+                              fontSize:
+                              MediaQuery.of(context).size.width * .09,
                               fontWeight: FontWeight.bold),
                         ),
                       ],

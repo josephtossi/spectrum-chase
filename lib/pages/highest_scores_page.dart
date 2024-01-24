@@ -73,7 +73,8 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
               left: 28,
               child: GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
+                  child: Icon(Icons.arrow_back_ios,color: Colors.white,
+                  size: MediaQuery.of(context).size.width * .05,)),
             ),
             Column(
               children: [
@@ -82,7 +83,7 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
                   style: GoogleFonts.raleway(
                       textStyle: Theme.of(context).textTheme.displayLarge,
                       color: const Color(0xffffffff),
-                      fontSize: 32,
+                      fontSize: MediaQuery.of(context).size.width * .07,
                       fontWeight: FontWeight.bold),
                 ),
                 Flexible(
@@ -126,26 +127,17 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
                                         Image.asset(
                                           'lib/assets/4399411.png',
                                           fit: BoxFit.cover,
-                                        ) : Container(
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                              gradient: LinearGradient(
-                                                  begin: Alignment.topLeft,
-                                                  end: Alignment.bottomRight,
-                                                  colors: [Color(0xff171648), Color(0xff301585)])
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(1.0),
-                                            child: Text(
-                                              '${widget.topUsersStatistics.indexOf(topUser) + 1}',
-                                              textAlign: TextAlign.center,
-                                              style: GoogleFonts.openSans(
-                                                  textStyle:
-                                                  Theme.of(context).textTheme.displayLarge,
-                                                  color: const Color(0xffffffff),
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                        ) : Padding(
+                                          padding: const EdgeInsets.all(1.75),
+                                          child: Text(
+                                            '${widget.topUsersStatistics.indexOf(topUser) + 1}',
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.openSans(
+                                                textStyle:
+                                                Theme.of(context).textTheme.displayLarge,
+                                                color: const Color(0xffffffff),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                       ),

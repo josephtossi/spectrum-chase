@@ -56,7 +56,8 @@ class _SettingsPageState extends State<SettingsPage> {
               left: 28,
               child: GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
+                  child: Icon(Icons.arrow_back_ios,color: Colors.white,
+                    size: MediaQuery.of(context).size.width * .05,)),
             ),
             Column(
               children: [
@@ -65,207 +66,208 @@ class _SettingsPageState extends State<SettingsPage> {
                   style: GoogleFonts.raleway(
                       textStyle: Theme.of(context).textTheme.displayLarge,
                       color: const Color(0xffffffff),
-                      fontSize: 32,
+                      fontSize: MediaQuery.of(context).size.width * .07,
                       fontWeight: FontWeight.bold),
                 ),
                 Flexible(
                     child: ScrollConfiguration(
                       behavior: MyBehavior(),
                       child: ListView(
-                  children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 28.0, left: 28),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Username',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.raleway(
-                                      textStyle:
-                                          Theme.of(context).textTheme.displayLarge,
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  '${widget.userInfo['userName'] ?? ''}',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.raleway(
-                                      height: 1.7,
-                                      textStyle:
-                                          Theme.of(context).textTheme.displayLarge,
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
+                        children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 28.0, left: 28),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Username',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.raleway(
+                                            textStyle:
+                                                Theme.of(context).textTheme.displayLarge,
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        '${widget.userInfo['userName'] ?? ''}',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.raleway(
+                                            height: 1.7,
+                                            textStyle:
+                                                Theme.of(context).textTheme.displayLarge,
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Score',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.raleway(
+                                            textStyle:
+                                                Theme.of(context).textTheme.displayLarge,
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            formatNumber(widget.userInfo['score'] ?? 0),
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.raleway(
+                                                textStyle: Theme.of(context)
+                                                    .textTheme
+                                                    .displayLarge,
+                                                color: Colors.white,
+                                                fontSize: 25,
+                                                height: .8,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Score',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.raleway(
-                                      textStyle:
-                                          Theme.of(context).textTheme.displayLarge,
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 28.0, left: 28, top: 35),
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [Color(0xffdf446b), Color(0xaadf446b)]),
                                 ),
-                                Center(
+                                child: Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(14.0),
                                     child: Text(
-                                      formatNumber(widget.userInfo['score'] ?? 0),
+                                      'You still need ${formatNumber((widget.highestScore - widget.userInfo['score'] ?? 0).toInt())} '
+                                      'to reach the highest score',
                                       textAlign: TextAlign.center,
                                       style: GoogleFonts.raleway(
-                                          textStyle: Theme.of(context)
-                                              .textTheme
-                                              .displayLarge,
+                                          textStyle:
+                                              Theme.of(context).textTheme.displayLarge,
                                           color: Colors.white,
-                                          fontSize: 25,
-                                          height: .8,
+                                          fontSize: MediaQuery.of(context)
+                                              .size.width * .042,
+                                          height: 1.23,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(right: 28.0, left: 28, top: 35),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [Color(0xffdf446b), Color(0xaadf446b)]),
-                          ),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(14.0),
-                              child: Text(
-                                'You still need ${formatNumber((widget.highestScore - widget.userInfo['score'] ?? 0).toInt())} '
-                                'to reach the highest score',
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.raleway(
-                                    textStyle:
-                                        Theme.of(context).textTheme.displayLarge,
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    height: 1.23,
-                                    fontWeight: FontWeight.bold),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
 
-                      /// slider music ///
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(right: 28.0, left: 28, top: 30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Music Volume',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.raleway(
-                                  textStyle: Theme.of(context).textTheme.displayLarge,
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
+                            /// slider music ///
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 28.0, left: 28, top: 30),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Music Volume',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.raleway(
+                                        textStyle: Theme.of(context).textTheme.displayLarge,
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: Colors.transparent,
-                        padding: const EdgeInsets.only(top: 12,right: 20.0, left: 20,),
-                        child: SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            activeTrackColor: Colors.green,
-                            thumbShape: const RoundSliderThumbShape(
-                                enabledThumbRadius: 10.0),
-                            overlayShape: const RoundSliderOverlayShape(
-                                overlayRadius: 0.0),
-                          ),
-                          child: Slider(
-                            value: musicVolume.toDouble(),
-                            min: 0,
-                            max: 1,
-                            activeColor: Colors.white,
-                            inactiveColor: const Color(0xFF8D8E98),
-                            onChanged: (double newValue) {
-                              setState(() {
-                                musicVolume = newValue;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
+                            Container(
+                              color: Colors.transparent,
+                              padding: const EdgeInsets.only(top: 10,right: 20.0, left: 20,),
+                              child: SliderTheme(
+                                data: SliderTheme.of(context).copyWith(
+                                  activeTrackColor: Colors.green,
+                                  thumbShape: const RoundSliderThumbShape(
+                                      enabledThumbRadius: 10.0),
+                                  overlayShape: const RoundSliderOverlayShape(
+                                      overlayRadius: 0.0),
+                                ),
+                                child: Slider(
+                                  value: musicVolume.toDouble(),
+                                  min: 0,
+                                  max: 1,
+                                  activeColor: Colors.white,
+                                  inactiveColor: const Color(0xFF8D8E98),
+                                  onChanged: (double newValue) {
+                                    setState(() {
+                                      musicVolume = newValue;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
 
-                      /// slider effects ///
-                      Padding(
-                        padding:
-                        const EdgeInsets.only(right: 28.0, left: 28, top: 30),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Effects Volume',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.raleway(
-                                  textStyle: Theme.of(context).textTheme.displayLarge,
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
+                            /// slider effects ///
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(right: 28.0, left: 28, top: 30),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Effects Volume',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.raleway(
+                                        textStyle: Theme.of(context).textTheme.displayLarge,
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
+                            Container(
+                              color: Colors.transparent,
+                              padding: const EdgeInsets.only(top: 10,right: 20.0, left: 20,),
+                              child: SliderTheme(
+                                data: SliderTheme.of(context).copyWith(
+                                  activeTrackColor: Colors.green,
+                                  thumbShape: const RoundSliderThumbShape(
+                                      enabledThumbRadius: 10.0),
+                                  overlayShape: const RoundSliderOverlayShape(
+                                      overlayRadius: 0.0),
+                                ),
+                                child: Slider(
+                                  value: effectsVolume.toDouble(),
+                                  min: 0,
+                                  max: 1,
+                                  activeColor: Colors.white,
+                                  inactiveColor: const Color(0xFF8D8E98),
+                                  onChanged: (double newValue) {
+                                    setState(() {
+                                      effectsVolume = newValue;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
-                      Container(
-                        color: Colors.transparent,
-                        padding: const EdgeInsets.only(top: 12,right: 20.0, left: 20,),
-                        child: SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            activeTrackColor: Colors.green,
-                            thumbShape: const RoundSliderThumbShape(
-                                enabledThumbRadius: 10.0),
-                            overlayShape: const RoundSliderOverlayShape(
-                                overlayRadius: 0.0),
-                          ),
-                          child: Slider(
-                            value: effectsVolume.toDouble(),
-                            min: 0,
-                            max: 1,
-                            activeColor: Colors.white,
-                            inactiveColor: const Color(0xFF8D8E98),
-                            onChanged: (double newValue) {
-                              setState(() {
-                                effectsVolume = newValue;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
                     )),
               ],
             ),

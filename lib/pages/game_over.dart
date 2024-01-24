@@ -49,19 +49,22 @@ class _GameOverState extends State<GameOver> {
             children: [
               Text(
                 'GAME OVER',
-                style: GoogleFonts.raleway(
+                style: GoogleFonts.alata(
                     textStyle: Theme.of(context).textTheme.displayLarge,
                     color: Colors.white,
-                    fontSize: 39,
+                    fontSize: MediaQuery.of(context).size.width * .085,
                     fontWeight: FontWeight.bold),
               ),
-              Text(
-                'Score : ${widget.score}',
-                style: GoogleFonts.raleway(
-                    textStyle: Theme.of(context).textTheme.displayLarge,
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w400),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Score : ${widget.score}',
+                  style: GoogleFonts.raleway(
+                      textStyle: Theme.of(context).textTheme.displayLarge,
+                      color: Colors.white,
+                      fontSize: MediaQuery.of(context).size.width * .06,
+                      fontWeight: FontWeight.w400),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 38.0),
@@ -77,14 +80,10 @@ class _GameOverState extends State<GameOver> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                        'Try Again',
-                        style: GoogleFonts.raleway(
-                            textStyle: Theme.of(context).textTheme.displayLarge,
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700),
-                      ),
+                      child: Icon(Icons.refresh,
+                        size: MediaQuery.of(context).size.width * .086,
+                        color: Colors.white,
+                      )
                     ),
                   ),
                 ),
@@ -105,13 +104,9 @@ class _GameOverState extends State<GameOver> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                        'Go Home',
-                        style: GoogleFonts.raleway(
-                            textStyle: Theme.of(context).textTheme.displayLarge,
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700),
+                      child: Icon(Icons.home,
+                        size: MediaQuery.of(context).size.width * .086,
+                        color: Colors.white,
                       ),
                     ),
                   ),

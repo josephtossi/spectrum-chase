@@ -37,7 +37,8 @@ class _InfoPageState extends State<InfoPage> {
               left: 28,
               child: GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: const Icon(Icons.arrow_back_ios,color: Colors.white,)),
+                  child: Icon(Icons.arrow_back_ios,color: Colors.white,
+                    size: MediaQuery.of(context).size.width * .05,)),
             ),
             Column(
               children: [
@@ -46,7 +47,7 @@ class _InfoPageState extends State<InfoPage> {
                   style: GoogleFonts.raleway(
                       textStyle: Theme.of(context).textTheme.displayLarge,
                       color: const Color(0xffffffff),
-                      fontSize: 32,
+                      fontSize: MediaQuery.of(context).size.width * .07,
                       fontWeight: FontWeight.bold),
                 ),
                 Flexible(
