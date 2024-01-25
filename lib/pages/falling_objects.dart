@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spectrum_chase/models/falling_object.dart';
 import 'package:spectrum_chase/pages/settings_page.dart';
+import 'package:spectrum_chase/services/ads_service.dart';
 
 import 'game_over.dart';
 
@@ -18,6 +19,7 @@ double objectSpeed = 5.5;
 
 class _FallingObjectsPageState extends State<FallingObjectsPage> {
   bool showInstructions = false;
+  bool showAd = false;
   bool isPaused = false;
   double basketPosition = 0.0;
   double objectSize = 40.0;
@@ -32,6 +34,8 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   String gameMusicString = "game_music.wav";
   String bonusMusicString = "bonus.wav";
   String completionMusicString = "completion.wav";
+  AdsService adsService = AdsService();
+  late FallingObject selectedFallingObject;
 
   void initPlayer() {
     advancedPlayer = AudioPlayer();
@@ -188,9 +192,10 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
           }
         } else {
           try{effectsPlayer.play(AssetSource(completionMusicString),volume: effectsVolume);}catch(e){}
-          isPaused = true;
-          gameOver = true;
-          advancedPlayer.stop();
+          if(!showAd){
+            showAdFunction();
+            selectedFallingObject = fallingObjects[i];
+          }
         }
       }
     }
@@ -236,10 +241,17 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
     });
   }
 
+  showAdFunction(){
+    showAd = true;
+    isPaused = true;
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      adsService.createRewardedAd();
       showInstructionsFunction();
       basketPosition = (MediaQuery.of(context).size.width / 2) - 42.5;
       try{initPlayer();}catch(e){}
@@ -440,6 +452,130 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                     child: Center(
                                       child:
                                       Image.asset('lib/assets/2938687.png'),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                /// show continue to watch ad and preserve score ///
+                if (showAd)
+                  AnimatedOpacity(
+                    duration: const Duration(seconds: 1),
+                    opacity: 1.0,
+                    child: Container(
+                      color: Colors.black.withOpacity(0.75),
+                      child: Center(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Turn Defeat into Triumph\n\nWatch an ad to keep the score and continue',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.raleway(
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge,
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      setState(() {
+                                        try{
+                                          advancedPlayer.pause();
+                                          adsService.showRewardedAd(
+                                            doneFunction: (){
+                                              setState(() {
+                                                objectSpeed = 5.5;
+                                                advancedPlayer.resume();
+                                                fallingObjects.clear();
+                                                isPaused = false;
+                                                showAd = false;
+                                              });
+                                            }
+                                          );
+                                        }catch(e){
+                                          print('error with ad: $e');
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                                        gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [Color(0xffdf446b), Color(0xaadf446b)]),
+                                      ),
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(14.0),
+                                          child: Text(
+                                            'Watch Ad',
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.raleway(
+                                                textStyle:
+                                                Theme.of(context).textTheme.displayLarge,
+                                                color: Colors.white,
+                                                fontSize: MediaQuery.of(context)
+                                                    .size.width * .042,
+                                                height: 1.23,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right:15.0,left: 15),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      isPaused = true;
+                                      gameOver = true;
+                                      advancedPlayer.stop();
+                                      showAd = false;
+                                      setState(() {});
+                                    },
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                                        gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [Color(0xffdf446b), Color(0xaadf446b)]),
+                                      ),
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(14.0),
+                                          child: Text(
+                                            'Accept Defeat',
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.raleway(
+                                                textStyle:
+                                                Theme.of(context).textTheme.displayLarge,
+                                                color: Colors.white,
+                                                fontSize: MediaQuery.of(context)
+                                                    .size.width * .042,
+                                                height: 1.23,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),

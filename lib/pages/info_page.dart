@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:spectrum_chase/services/ads_service.dart';
 
 class InfoPage extends StatefulWidget {
   const InfoPage({super.key});
@@ -10,14 +13,97 @@ class InfoPage extends StatefulWidget {
 }
 
 class _InfoPageState extends State<InfoPage> {
+  /// variables for ads ///
+  AdsService _adsService = AdsService();
+  AdSize? _adSize;
+  late Orientation _currentOrientation = Orientation.portrait;
+  bool _isLoaded = false;
+  AdManagerBannerAd? _inlineAdaptiveAd;
+  static const _insets = 16.0;
+  double get _adWidth => MediaQuery.of(context).size.width - (2 * _insets);
+
+  void _loadAd() async {
+    await _inlineAdaptiveAd?.dispose();
+    setState(() {
+      _inlineAdaptiveAd = null;
+      _isLoaded = false;
+    });
+    _inlineAdaptiveAd = AdManagerBannerAd(
+      adUnitId: 'ca-app-pub-6797834730215290/7911468356',
+      sizes: [AdSize(width: (MediaQuery.of(context).size.width - (2 * _insets)).toInt(), height: 50)],
+      request: AdManagerAdRequest(),
+      listener: AdManagerBannerAdListener(
+        onAdLoaded: (Ad ad) async {
+          print('Inline adaptive banner loaded: ${ad.responseInfo}');
+          AdManagerBannerAd bannerAd = (ad as AdManagerBannerAd);
+          final AdSize? size = await bannerAd.getPlatformAdSize();
+          if (size == null) {
+            print('Error: getPlatformAdSize() returned null for $bannerAd');
+            return;
+          }
+
+          setState(() {
+            _inlineAdaptiveAd = bannerAd;
+            _isLoaded = true;
+            _adSize = size;
+          });
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          print('Inline adaptive banner failedToLoad: $error');
+          ad.dispose();
+        },
+      ),
+    );
+    await _inlineAdaptiveAd!.load();
+  }
+
   @override
   void initState() {
+    _adsService.createInterstitialAd();
     super.initState();
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _currentOrientation = MediaQuery.of(context).orientation;
+      _loadAd();
+    });
+  }
+
+  @override
   void dispose() {
+    Future.delayed(const Duration(seconds: 1), (){
+      _adsService.showInterstitialAd();
+    });
     super.dispose();
+  }
+
+  Widget _getAdWidget() {
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        if (_currentOrientation == orientation &&
+            _inlineAdaptiveAd != null &&
+            _isLoaded &&
+            _adSize != null) {
+          return Align(
+              child: Container(
+                width: _adWidth,
+                height: _adSize!.height.toDouble(),
+                child: AdWidget(
+                  ad: _inlineAdaptiveAd!,
+                ),
+              ));
+        }
+        // Reload the ad if the orientation changes.
+        if (_currentOrientation != orientation) {
+          _currentOrientation = orientation;
+          _loadAd();
+        }
+        return Container();
+      },
+    );
   }
 
   @override
@@ -55,6 +141,10 @@ class _InfoPageState extends State<InfoPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children:[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: _getAdWidget(),
+                        ),
                         /// Explanation ///
                         Padding(
                           padding: EdgeInsets.only(right: 25.0,
