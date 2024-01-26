@@ -1,4 +1,4 @@
-package com.example.spectrum_chase;
+package com.spectrum_chase.spectrum_chase;
 
 import io.flutter.embedding.android.FlutterActivity;
 

@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.2+4
 
 environment:
   sdk: '>=3.0.5 <4.0.0'
@@ -36,7 +36,7 @@ dependencies:
   faker: ^2.1.0
   shared_preferences: ^2.2.2
   visibility_detector: ^0.4.0+2
-
+  icons_launcher: ^2.1.7
   google_mobile_ads: ^4.0.0
 
 
@@ -44,11 +44,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+icons_launcher:
+  image_path: "lib/assets/launcher.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
+
   flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
@@ -65,6 +68,7 @@ flutter:
     - lib/assets/2938687.png
     - lib/assets/shopping-basket-icon-2048x1742-42o8ifn2.png
     - lib/assets/4399411.png
+    - lib/assets/launcher.png
     - lib/assets/no-bg-logo.png
     - assets/game_music.wav
     - assets/completion.wav
