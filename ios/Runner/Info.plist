@@ -16,6 +16,8 @@
 	<string>spectrum_chase</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>FLTEnableImpeller</key>
+    <false />
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
@@ -47,5 +49,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-6797834730215290~1693490464</string>
 </dict>
 </plist>
