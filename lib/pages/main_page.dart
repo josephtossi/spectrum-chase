@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spectrum_chase/constants.dart';
 import 'package:spectrum_chase/data/data_storage_service.dart';
 import 'package:spectrum_chase/pages/falling_objects.dart';
 import 'package:spectrum_chase/pages/highest_scores_page.dart';
@@ -177,11 +178,8 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xff171648), Color(0xff301585)])),
+      decoration: BoxDecoration(
+          gradient: Constants.selectedBackgroundColor),
       child: Column(
         children: [
           /// Logo ///

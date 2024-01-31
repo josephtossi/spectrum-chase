@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spectrum_chase/constants.dart';
 
 import '../data/data_storage_service.dart';
 
@@ -37,11 +38,8 @@ class _GameOverState extends State<GameOver> {
   Widget build(BuildContext context) {
     return Material(
       child: Container(
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xff171648), Color(0xff301585)])),
+        decoration: BoxDecoration(
+            gradient: Constants.selectedBackgroundColor),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

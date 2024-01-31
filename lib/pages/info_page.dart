@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:spectrum_chase/constants.dart';
 import 'package:spectrum_chase/services/ads_service.dart';
 
 class InfoPage extends StatefulWidget {
@@ -111,11 +112,8 @@ class _InfoPageState extends State<InfoPage> {
     return Material(
       child: Container(
         padding: const EdgeInsets.only(top: 50),
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xff171648), Color(0xff301585)])),
+        decoration: BoxDecoration(
+            gradient: Constants.selectedBackgroundColor),
         child: Stack(
           children: [
             Positioned(
@@ -230,7 +228,7 @@ class _InfoPageState extends State<InfoPage> {
                                     height: MediaQuery.of(context).size.width * .2,
                                     color: Colors.transparent,
                                     child: Image.asset(
-                                      'lib/assets/shopping-basket-icon-2048x1742-42o8ifn2.png',
+                                      'lib/assets/basket_1.png',
                                       fit: BoxFit.scaleDown,
                                     ),
                                   ),

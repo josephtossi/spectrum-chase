@@ -66,13 +66,22 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/2938687.png
-    - lib/assets/shopping-basket-icon-2048x1742-42o8ifn2.png
+    - lib/assets/basket_1.png
     - lib/assets/4399411.png
     - lib/assets/launcher.png
     - lib/assets/no-bg-logo.png
     - assets/game_music.wav
     - assets/completion.wav
     - assets/bonus.wav
+    - lib/assets/basket_1.png
+    - lib/assets/basket_2.png
+    - lib/assets/basket_3.png
+    - lib/assets/basket_4.png
+    - lib/assets/basket_5.png
+    - lib/assets/basket_6.png
+    - lib/assets/basket_7.png
+    - lib/assets/sun.png
+    - lib/assets/moon.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

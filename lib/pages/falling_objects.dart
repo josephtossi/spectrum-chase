@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:spectrum_chase/constants.dart';
 import 'package:spectrum_chase/models/falling_object.dart';
 import 'package:spectrum_chase/pages/settings_page.dart';
 import 'package:spectrum_chase/services/ads_service.dart';
@@ -26,6 +27,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   List<FallingObject> fallingObjects = [];
   int score = 0;
   Color selectedColor = Colors.red;
+  String selectedIcon = 'lib/assets/moon.png';
   bool gameOver = false;
   GlobalKey basketKey = GlobalKey();
   /// variables regarding audio ///
@@ -73,7 +75,12 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
 
   void changeSelectedColor() {
     setState(() {
-      selectedColor = generateRandomColorFromList();
+      if(Constants.selectedGameType == 'colors'){
+        selectedColor = generateRandomColorFromList();
+      }else{
+        selectedColor = Colors.transparent;
+        selectedIcon = generateRandomSunOrMoon();
+      }
     });
   }
 
@@ -130,12 +137,25 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
     return predefinedColors[random.nextInt(predefinedColors.length)];
   }
 
+  String generateRandomSunOrMoon() {
+    List<String> predefinedStrings = [
+      'lib/assets/moon.png',
+      'lib/assets/sun.png'
+    ];
+
+    Random random = Random();
+    return predefinedStrings[random.nextInt(predefinedStrings.length)];
+  }
+
   void generateFallingObject() {
     setState(() {
       fallingObjects.add(
         FallingObject(
           opacity: 1,
-          color: generateRandomColorFromList(),
+          icon: Constants.selectedGameType == 'colors' ?
+          'lib/assets/2938687.png': generateRandomSunOrMoon(),
+          color: Constants.selectedGameType == 'colors' ?
+          generateRandomColorFromList() : Colors.transparent,
           top: 80,
           left: getRandomPosition(),
         ),
@@ -155,6 +175,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
             return FallingObject(
               opacity: object.opacity,
               top: object.top + (objectSpeed > 8 ? objectSpeed/2 : objectSpeed),
+              icon: object.icon,
               color: object.color,
               left: object.left,
             );
@@ -183,18 +204,38 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
       );
       if (isBoxVisible(objectBox, sliderBottom) &&
           boxIntersect(basketBox, objectBox)) {
-        if (selectedColor == fallingObjects[i].color) {
-          try{effectsPlayer.play(AssetSource(bonusMusicString),volume: effectsVolume);}catch(e){}
-          score++;
-          fallingObjects[i].opacity = 0;
-          if (score % 5 == 0) {
-            increaseSpeed();
+        /// For gaming colors ///
+        if(Constants.selectedGameType == 'colors'){
+          if (selectedColor == fallingObjects[i].color) {
+            try{effectsPlayer.play(AssetSource(bonusMusicString),volume: effectsVolume);}catch(e){}
+            score++;
+            fallingObjects[i].opacity = 0;
+            if (score % 5 == 0) {
+              increaseSpeed();
+            }
+          } else {
+            try{effectsPlayer.play(AssetSource(completionMusicString),volume: effectsVolume);}catch(e){}
+            if(!showAd){
+              showAdFunction();
+              selectedFallingObject = fallingObjects[i];
+            }
           }
-        } else {
-          try{effectsPlayer.play(AssetSource(completionMusicString),volume: effectsVolume);}catch(e){}
-          if(!showAd){
-            showAdFunction();
-            selectedFallingObject = fallingObjects[i];
+        }
+        /// For Sun and moon game ///
+        else{
+          if (selectedIcon == fallingObjects[i].icon) {
+            try{effectsPlayer.play(AssetSource(bonusMusicString),volume: effectsVolume);}catch(e){}
+            score++;
+            fallingObjects[i].opacity = 0;
+            if (score % 5 == 0) {
+              increaseSpeed();
+            }
+          } else {
+            try{effectsPlayer.play(AssetSource(completionMusicString),volume: effectsVolume);}catch(e){}
+            if(!showAd){
+              showAdFunction();
+              selectedFallingObject = fallingObjects[i];
+            }
           }
         }
       }
@@ -251,6 +292,12 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        if(Constants.selectedGameType != 'colors'){
+          selectedColor = Colors.transparent;
+          selectedIcon = generateRandomSunOrMoon();
+        }
+      });
       adsService.createRewardedAd();
       showInstructionsFunction();
       basketPosition = (MediaQuery.of(context).size.width / 2) - 42.5;
@@ -275,11 +322,8 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
           )
         : Container(
             padding: const EdgeInsets.only(top: 38),
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xff171648), Color(0xff301585)])),
+            decoration: BoxDecoration(
+                gradient: Constants.selectedBackgroundColor),
             child: Stack(
               children: [
                 /// Falling Objects ///
@@ -298,7 +342,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(4))),
                         child: Center(
-                          child: Image.asset('lib/assets/2938687.png'),
+                          child: Image.asset(object.icon),
                         ),
                       ),
                     ),
@@ -381,8 +425,9 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(4))),
                                     child: Center(
-                                      child:
-                                          Image.asset('lib/assets/2938687.png'),
+                                      child:Constants.selectedGameType == 'colors' ?
+                                          Image.asset('lib/assets/2938687.png') :
+                                          Image.asset(selectedIcon),
                                     ),
                                   ),
                                 ),
@@ -407,7 +452,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                       height: 80,
                       color: Colors.transparent,
                       child: Image.asset(
-                        'lib/assets/shopping-basket-icon-2048x1742-42o8ifn2.png',
+                        Constants.selectedBasket,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -450,8 +495,9 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(4))),
                                     child: Center(
-                                      child:
-                                      Image.asset('lib/assets/2938687.png'),
+                                      child:Constants.selectedGameType == 'colors' ?
+                                      Image.asset('lib/assets/2938687.png') :
+                                      Image.asset(selectedIcon),
                                     ),
                                   ),
                                 ),
