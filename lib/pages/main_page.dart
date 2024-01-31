@@ -225,15 +225,10 @@ class _MainPageState extends State<MainPage> {
                                 colors: [Color(0xffdf446b), Color(0xff964ed8)]),
                           ),
                           child: Container(
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color(0xff171648),
-                                      Color(0xff301585)
-                                    ])),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(25)),
+                                // shape: BoxShape.circle,
+                                gradient: Constants.selectedBackgroundColor),
                             child: Center(
                               child: Icon(Icons.play_arrow_rounded,
                                   color: const Color(0xfffefefe),

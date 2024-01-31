@@ -218,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ),
                                 Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.only(top: 10.0),
                                     child: Text(
                                       formatNumber(
                                           widget.userInfo['score'] ?? 0),

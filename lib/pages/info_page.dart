@@ -21,6 +21,7 @@ class _InfoPageState extends State<InfoPage> {
   bool _isLoaded = false;
   AdManagerBannerAd? _inlineAdaptiveAd;
   static const _insets = 16.0;
+
   double get _adWidth => MediaQuery.of(context).size.width - (2 * _insets);
 
   void _loadAd() async {
@@ -31,7 +32,11 @@ class _InfoPageState extends State<InfoPage> {
     });
     _inlineAdaptiveAd = AdManagerBannerAd(
       adUnitId: 'ca-app-pub-6797834730215290/7911468356',
-      sizes: [AdSize(width: (MediaQuery.of(context).size.width - (2 * _insets)).toInt(), height: 50)],
+      sizes: [
+        AdSize(
+            width: (MediaQuery.of(context).size.width - (2 * _insets)).toInt(),
+            height: 50)
+      ],
       request: AdManagerAdRequest(),
       listener: AdManagerBannerAdListener(
         onAdLoaded: (Ad ad) async {
@@ -75,36 +80,10 @@ class _InfoPageState extends State<InfoPage> {
 
   @override
   void dispose() {
-    Future.delayed(const Duration(seconds: 1), (){
+    Future.delayed(const Duration(seconds: 1), () {
       _adsService.showInterstitialAd();
     });
     super.dispose();
-  }
-
-  Widget _getAdWidget() {
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        if (_currentOrientation == orientation &&
-            _inlineAdaptiveAd != null &&
-            _isLoaded &&
-            _adSize != null) {
-          return Align(
-              child: Container(
-                width: _adWidth,
-                height: _adSize!.height.toDouble(),
-                child: AdWidget(
-                  ad: _inlineAdaptiveAd!,
-                ),
-              ));
-        }
-        // Reload the ad if the orientation changes.
-        if (_currentOrientation != orientation) {
-          _currentOrientation = orientation;
-          _loadAd();
-        }
-        return Container();
-      },
-    );
   }
 
   @override
@@ -112,8 +91,7 @@ class _InfoPageState extends State<InfoPage> {
     return Material(
       child: Container(
         padding: const EdgeInsets.only(top: 50),
-        decoration: BoxDecoration(
-            gradient: Constants.selectedBackgroundColor),
+        decoration: BoxDecoration(gradient: Constants.selectedBackgroundColor),
         child: Stack(
           children: [
             Positioned(
@@ -121,8 +99,11 @@ class _InfoPageState extends State<InfoPage> {
               left: 28,
               child: GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_back_ios,color: Colors.white,
-                    size: MediaQuery.of(context).size.width * .05,)),
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.white,
+                    size: MediaQuery.of(context).size.width * .05,
+                  )),
             ),
             Column(
               children: [
@@ -136,16 +117,13 @@ class _InfoPageState extends State<InfoPage> {
                 ),
                 Flexible(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children:[
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: _getAdWidget(),
-                        ),
+                      children: [
                         /// Explanation ///
                         Padding(
-                          padding: EdgeInsets.only(right: 25.0,
+                          padding: EdgeInsets.only(
+                              right: 25.0,
                               top: MediaQuery.of(context).size.width * .25,
                               left: 25),
                           child: Column(
@@ -165,7 +143,7 @@ class _InfoPageState extends State<InfoPage> {
                                         fontWeight: FontWeight.w500),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(4.0),
+                                    padding: const EdgeInsets.only(top: 4.0,bottom: 20),
                                     child: Container(
                                       width: 40,
                                       height: 40,
@@ -174,8 +152,8 @@ class _InfoPageState extends State<InfoPage> {
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(4))),
                                       child: Center(
-                                        child:
-                                        Image.asset('lib/assets/2938687.png'),
+                                        child: Image.asset(
+                                            'lib/assets/2938687.png'),
                                       ),
                                     ),
                                   ),
@@ -184,20 +162,24 @@ class _InfoPageState extends State<InfoPage> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Your goal is to catch the specified color from the falling objects while avoiding others',
-                                  textAlign: TextAlign.center,
+                                  'Your goal is to catch the specified color or object '
+                                      'while they are falling but beware to avoid others\n\n'
+                                      'You can customise your game play in the settings page \nChoose between 2 different game play types as well',
+                                  textAlign: TextAlign.left,
                                   style: GoogleFonts.raleway(
-                                      height: 1.7,
-                                      textStyle:
-                                      Theme.of(context).textTheme.displayLarge,
+                                      height: 1.5,
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge,
                                       color: Colors.white,
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ],
                           ),
                         ),
+
                         /// Basket Explanation ///
                         Padding(
                           padding: const EdgeInsets.only(bottom: 30.0),
@@ -210,8 +192,9 @@ class _InfoPageState extends State<InfoPage> {
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.raleway(
                                       height: 1.5,
-                                      textStyle:
-                                      Theme.of(context).textTheme.displayLarge,
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge,
                                       color: Colors.white,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
@@ -219,21 +202,30 @@ class _InfoPageState extends State<InfoPage> {
                               ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  const Icon(Icons.swipe_left_alt,
-                                    color: Colors.white,size: 50,),
+                                  const Icon(
+                                    Icons.swipe_left_alt,
+                                    color: Colors.white,
+                                    size: 50,
+                                  ),
                                   Container(
-                                    width: MediaQuery.of(context).size.width * .2,
-                                    height: MediaQuery.of(context).size.width * .2,
+                                    width:
+                                        MediaQuery.of(context).size.width * .2,
+                                    height:
+                                        MediaQuery.of(context).size.width * .2,
                                     color: Colors.transparent,
                                     child: Image.asset(
                                       'lib/assets/basket_1.png',
                                       fit: BoxFit.scaleDown,
                                     ),
                                   ),
-                                  const Icon(Icons.swipe_right_alt,
-                                    color: Colors.white,size: 50,),
+                                  const Icon(
+                                    Icons.swipe_right_alt,
+                                    color: Colors.white,
+                                    size: 50,
+                                  ),
                                 ],
                               ),
                             ],

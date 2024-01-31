@@ -169,10 +169,6 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
                       fontSize: MediaQuery.of(context).size.width * .07,
                       fontWeight: FontWeight.bold),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: _getAdWidget(),
-                ),
                 Flexible(
                   child: ScrollConfiguration(
                     behavior: MyBehavior(),
@@ -261,6 +257,10 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
                           );
                         }).toList()),
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: _getAdWidget(),
                 ),
               ],
             ),

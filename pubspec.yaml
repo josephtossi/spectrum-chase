@@ -38,6 +38,7 @@ dependencies:
   visibility_detector: ^0.4.0+2
   icons_launcher: ^2.1.7
   google_mobile_ads: ^4.0.0
+  sensors_plus: ^4.0.2
 
 
 dev_dependencies:

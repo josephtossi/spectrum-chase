@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:spectrum_chase/constants.dart';
 import 'package:spectrum_chase/models/falling_object.dart';
 import 'package:spectrum_chase/pages/settings_page.dart';
@@ -253,6 +254,15 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
     return box.bottom > 0 && box.top < sliderBottom;
   }
 
+  void startTiltControls() {
+    accelerometerEventStream().listen((AccelerometerEvent event) {
+      if (!isPaused) {
+        moveBasket(event.y * -10); // Adjust the multiplier based on sensitivity
+      }
+    });
+  }
+
+
   void moveBasket(double delta) {
     if (!isPaused) {
       setState(() {
@@ -291,6 +301,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   @override
   void initState() {
     super.initState();
+    startTiltControls();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
         if(Constants.selectedGameType != 'colors'){
@@ -377,6 +388,19 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 18.0),
+                                child: Text(
+                                  'Score'.toUpperCase(),
+                                  style: GoogleFonts.raleway(
+                                    color: Colors.white,
+                                    textStyle:
+                                    Theme.of(context).textTheme.displayLarge,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
                               Text(
                                 '$score',
                                 style: GoogleFonts.raleway(
@@ -384,18 +408,9 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                         .textTheme
                                         .displayLarge,
                                     color: Colors.white,
-                                    fontSize: 39,
+                                    fontSize: 35,
+                                    height: 1,
                                     fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                'Score'.toUpperCase(),
-                                style: GoogleFonts.raleway(
-                                  color: Colors.white,
-                                  textStyle:
-                                      Theme.of(context).textTheme.displayLarge,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
-                                ),
                               ),
                             ],
                           ),
@@ -442,19 +457,30 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                 Positioned(
                   bottom: 10,
                   left: basketPosition,
+                  child: Container(
+                    key: basketKey,
+                    width: 80,
+                    height: 80,
+                    color: Colors.transparent,
+                    child: Image.asset(
+                      Constants.selectedBasket,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+
+                /// Controller ///
+                Positioned(
+                  right: 0,
+                  left: 0,
+                  top: MediaQuery.of(context).size.height * .15,
+                  bottom: 0,
                   child: GestureDetector(
                     onHorizontalDragUpdate: (details) {
                       moveBasket(details.primaryDelta!);
                     },
                     child: Container(
-                      key: basketKey,
-                      width: 80,
-                      height: 80,
-                      color: Colors.transparent,
-                      child: Image.asset(
-                        Constants.selectedBasket,
-                        fit: BoxFit.cover,
-                      ),
+                      color: Colors.transparent
                     ),
                   ),
                 ),
