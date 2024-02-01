@@ -4,7 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:sensors_plus/sensors_plus.dart';
+import 'package:im_animations/im_animations.dart';
 import 'package:spectrum_chase/constants.dart';
 import 'package:spectrum_chase/models/falling_object.dart';
 import 'package:spectrum_chase/pages/settings_page.dart';
@@ -31,6 +31,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   String selectedIcon = 'lib/assets/moon.png';
   bool gameOver = false;
   GlobalKey basketKey = GlobalKey();
+
   /// variables regarding audio ///
   late AudioPlayer advancedPlayer;
   late AudioPlayer effectsPlayer;
@@ -43,21 +44,22 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   void initPlayer() {
     advancedPlayer = AudioPlayer();
     effectsPlayer = AudioPlayer();
-    advancedPlayer.play(AssetSource(gameMusicString),volume: musicVolume);
+    advancedPlayer.play(AssetSource(gameMusicString), volume: musicVolume);
     advancedPlayer.onPlayerStateChanged.listen(
-          (it) {
-            switch (it) {
+      (it) {
+        switch (it) {
           case PlayerState.playing:
-            if(gameOver){
+            if (gameOver) {
               advancedPlayer.stop();
             }
             break;
           case PlayerState.stopped:
             break;
           case PlayerState.completed:
-            if(!gameOver){
-              advancedPlayer.play(AssetSource(gameMusicString),volume: musicVolume);
-            }else{
+            if (!gameOver) {
+              advancedPlayer.play(AssetSource(gameMusicString),
+                  volume: musicVolume);
+            } else {
               advancedPlayer.stop();
             }
             break;
@@ -76,9 +78,9 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
 
   void changeSelectedColor() {
     setState(() {
-      if(Constants.selectedGameType == 'colors'){
+      if (Constants.selectedGameType == 'colors') {
         selectedColor = generateRandomColorFromList();
-      }else{
+      } else {
         selectedColor = Colors.transparent;
         selectedIcon = generateRandomSunOrMoon();
       }
@@ -88,10 +90,10 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   void togglePause() {
     setState(() {
       isPaused = !isPaused;
-      if(isPaused){
+      if (isPaused) {
         advancedPlayer.stop();
-      }else{
-        advancedPlayer.play(AssetSource(gameMusicString),volume: musicVolume);
+      } else {
+        advancedPlayer.play(AssetSource(gameMusicString), volume: musicVolume);
       }
     });
   }
@@ -153,10 +155,12 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
       fallingObjects.add(
         FallingObject(
           opacity: 1,
-          icon: Constants.selectedGameType == 'colors' ?
-          'lib/assets/2938687.png': generateRandomSunOrMoon(),
-          color: Constants.selectedGameType == 'colors' ?
-          generateRandomColorFromList() : Colors.transparent,
+          icon: Constants.selectedGameType == 'colors'
+              ? 'lib/assets/2938687.png'
+              : generateRandomSunOrMoon(),
+          color: Constants.selectedGameType == 'colors'
+              ? generateRandomColorFromList()
+              : Colors.transparent,
           top: 80,
           left: getRandomPosition(),
         ),
@@ -175,7 +179,8 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
           .map((object) {
             return FallingObject(
               opacity: object.opacity,
-              top: object.top + (objectSpeed > 8 ? objectSpeed/2 : objectSpeed),
+              top: object.top +
+                  (objectSpeed > 8 ? objectSpeed / 2 : objectSpeed),
               icon: object.icon,
               color: object.color,
               left: object.left,
@@ -206,34 +211,49 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
       if (isBoxVisible(objectBox, sliderBottom) &&
           boxIntersect(basketBox, objectBox)) {
         /// For gaming colors ///
-        if(Constants.selectedGameType == 'colors'){
+        if (Constants.selectedGameType == 'colors') {
           if (selectedColor == fallingObjects[i].color) {
-            try{effectsPlayer.play(AssetSource(bonusMusicString),volume: effectsVolume);}catch(e){}
+            try {
+              effectsPlayer.play(AssetSource(bonusMusicString),
+                  volume: effectsVolume);
+            } catch (e) {}
             score++;
             fallingObjects[i].opacity = 0;
             if (score % 5 == 0) {
+              objectSize += .1;
               increaseSpeed();
             }
-          } else {
-            try{effectsPlayer.play(AssetSource(completionMusicString),volume: effectsVolume);}catch(e){}
-            if(!showAd){
+          }
+          else {
+            try {
+              effectsPlayer.play(AssetSource(completionMusicString),
+                  volume: effectsVolume);
+            } catch (e) {}
+            if (!showAd) {
               showAdFunction();
               selectedFallingObject = fallingObjects[i];
             }
           }
         }
+
         /// For Sun and moon game ///
-        else{
+        else {
           if (selectedIcon == fallingObjects[i].icon) {
-            try{effectsPlayer.play(AssetSource(bonusMusicString),volume: effectsVolume);}catch(e){}
+            try {
+              effectsPlayer.play(AssetSource(bonusMusicString),
+                  volume: effectsVolume);
+            } catch (e) {}
             score++;
             fallingObjects[i].opacity = 0;
             if (score % 5 == 0) {
               increaseSpeed();
             }
           } else {
-            try{effectsPlayer.play(AssetSource(completionMusicString),volume: effectsVolume);}catch(e){}
-            if(!showAd){
+            try {
+              effectsPlayer.play(AssetSource(completionMusicString),
+                  volume: effectsVolume);
+            } catch (e) {}
+            if (!showAd) {
               showAdFunction();
               selectedFallingObject = fallingObjects[i];
             }
@@ -254,15 +274,6 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
     return box.bottom > 0 && box.top < sliderBottom;
   }
 
-  // void startTiltControls() {
-  //   accelerometerEventStream().listen((AccelerometerEvent event) {
-  //     if (!isPaused) {
-  //       moveBasket(event.y * -10); // Adjust the multiplier based on sensitivity
-  //     }
-  //   });
-  // }
-
-
   void moveBasket(double delta) {
     if (!isPaused) {
       setState(() {
@@ -280,7 +291,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
     });
   }
 
-  showInstructionsFunction(){
+  showInstructionsFunction() {
     showInstructions = true;
     isPaused = true;
     setState(() {});
@@ -292,7 +303,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
     });
   }
 
-  showAdFunction(){
+  showAdFunction() {
     showAd = true;
     isPaused = true;
     setState(() {});
@@ -301,10 +312,9 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   @override
   void initState() {
     super.initState();
-    // startTiltControls();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        if(Constants.selectedGameType != 'colors'){
+        if (Constants.selectedGameType != 'colors') {
           selectedColor = Colors.transparent;
           selectedIcon = generateRandomSunOrMoon();
         }
@@ -312,7 +322,9 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
       adsService.createRewardedAd();
       showInstructionsFunction();
       basketPosition = (MediaQuery.of(context).size.width / 2) - 42.5;
-      try{initPlayer();}catch(e){}
+      try {
+        initPlayer();
+      } catch (e) {}
       startFallingObjects();
     });
   }
@@ -333,8 +345,8 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
           )
         : Container(
             padding: const EdgeInsets.only(top: 38),
-            decoration: BoxDecoration(
-                gradient: Constants.selectedBackgroundColor),
+            decoration:
+                BoxDecoration(gradient: Constants.selectedBackgroundColor),
             child: Stack(
               children: [
                 /// Falling Objects ///
@@ -394,8 +406,9 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                   'Score'.toUpperCase(),
                                   style: GoogleFonts.raleway(
                                     color: Colors.white,
-                                    textStyle:
-                                    Theme.of(context).textTheme.displayLarge,
+                                    textStyle: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge,
                                     fontSize: 15,
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -420,29 +433,23 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  'Catch',
-                                  style: GoogleFonts.raleway(
-                                      textStyle: Theme.of(context)
-                                          .textTheme
-                                          .displayLarge,
-                                      color: Colors.white,
-                                      fontSize: 13.76,
-                                      fontWeight: FontWeight.w500),
-                                ),
                                 Padding(
                                   padding: const EdgeInsets.all(4.0),
-                                  child: Container(
-                                    width: objectSize / 1.5,
-                                    height: objectSize / 1.5,
-                                    decoration: BoxDecoration(
-                                        color: selectedColor,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(4))),
-                                    child: Center(
-                                      child:Constants.selectedGameType == 'colors' ?
-                                          Image.asset('lib/assets/2938687.png') :
-                                          Image.asset(selectedIcon),
+                                  child: HeartBeat(
+                                    child: Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                          color: selectedColor,
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(4))),
+                                      child: Center(
+                                        child:
+                                            Constants.selectedGameType == 'colors'
+                                                ? Image.asset(
+                                                    'lib/assets/2938687.png')
+                                                : Image.asset(selectedIcon),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -479,9 +486,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                     onHorizontalDragUpdate: (details) {
                       moveBasket(details.primaryDelta!);
                     },
-                    child: Container(
-                      color: Colors.transparent
-                    ),
+                    child: Container(color: Colors.transparent),
                   ),
                 ),
 
@@ -495,7 +500,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                       child: Center(
                         child: Material(
                           color: Colors.transparent,
-                          child:  Padding(
+                          child: Padding(
                             padding: const EdgeInsets.only(right: 20.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -521,9 +526,11 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(4))),
                                     child: Center(
-                                      child:Constants.selectedGameType == 'colors' ?
-                                      Image.asset('lib/assets/2938687.png') :
-                                      Image.asset(selectedIcon),
+                                      child:
+                                          Constants.selectedGameType == 'colors'
+                                              ? Image.asset(
+                                                  'lib/assets/2938687.png')
+                                              : Image.asset(selectedIcon),
                                     ),
                                   ),
                                 ),
@@ -565,33 +572,36 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(15.0),
                                   child: GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       setState(() {
-                                        try{
+                                        try {
                                           advancedPlayer.pause();
                                           adsService.showRewardedAd(
-                                            doneFunction: (){
-                                              setState(() {
-                                                objectSpeed = 5.5;
-                                                advancedPlayer.resume();
-                                                fallingObjects.clear();
-                                                isPaused = false;
-                                                showAd = false;
-                                              });
-                                            }
-                                          );
-                                        }catch(e){
+                                              doneFunction: () {
+                                            setState(() {
+                                              objectSpeed = 5.5;
+                                              advancedPlayer.resume();
+                                              fallingObjects.clear();
+                                              isPaused = false;
+                                              showAd = false;
+                                            });
+                                          });
+                                        } catch (e) {
                                           print('error with ad: $e');
                                         }
                                       });
                                     },
                                     child: Container(
                                       decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5)),
                                         gradient: LinearGradient(
                                             begin: Alignment.topLeft,
                                             end: Alignment.bottomRight,
-                                            colors: [Color(0xffdf446b), Color(0xaadf446b)]),
+                                            colors: [
+                                              Color(0xffdf446b),
+                                              Color(0xaadf446b)
+                                            ]),
                                       ),
                                       child: Center(
                                         child: Padding(
@@ -600,11 +610,14 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                             'Watch Ad',
                                             textAlign: TextAlign.center,
                                             style: GoogleFonts.raleway(
-                                                textStyle:
-                                                Theme.of(context).textTheme.displayLarge,
+                                                textStyle: Theme.of(context)
+                                                    .textTheme
+                                                    .displayLarge,
                                                 color: Colors.white,
                                                 fontSize: MediaQuery.of(context)
-                                                    .size.width * .042,
+                                                        .size
+                                                        .width *
+                                                    .042,
                                                 height: 1.23,
                                                 fontWeight: FontWeight.bold),
                                           ),
@@ -614,9 +627,10 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(right:15.0,left: 15),
+                                  padding: const EdgeInsets.only(
+                                      right: 15.0, left: 15),
                                   child: GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       isPaused = true;
                                       gameOver = true;
                                       advancedPlayer.stop();
@@ -625,11 +639,15 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                     },
                                     child: Container(
                                       decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5)),
                                         gradient: LinearGradient(
                                             begin: Alignment.topLeft,
                                             end: Alignment.bottomRight,
-                                            colors: [Color(0xffdf446b), Color(0xaadf446b)]),
+                                            colors: [
+                                              Color(0xffdf446b),
+                                              Color(0xaadf446b)
+                                            ]),
                                       ),
                                       child: Center(
                                         child: Padding(
@@ -638,11 +656,14 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                             'Accept Defeat',
                                             textAlign: TextAlign.center,
                                             style: GoogleFonts.raleway(
-                                                textStyle:
-                                                Theme.of(context).textTheme.displayLarge,
+                                                textStyle: Theme.of(context)
+                                                    .textTheme
+                                                    .displayLarge,
                                                 color: Colors.white,
                                                 fontSize: MediaQuery.of(context)
-                                                    .size.width * .042,
+                                                        .size
+                                                        .width *
+                                                    .042,
                                                 height: 1.23,
                                                 fontWeight: FontWeight.bold),
                                           ),
