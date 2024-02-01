@@ -4,7 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sensors_plus/sensors_plus.dart';
+// import 'package:sensors_plus/sensors_plus.dart';
 import 'package:spectrum_chase/constants.dart';
 import 'package:spectrum_chase/models/falling_object.dart';
 import 'package:spectrum_chase/pages/settings_page.dart';
@@ -254,13 +254,13 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
     return box.bottom > 0 && box.top < sliderBottom;
   }
 
-  void startTiltControls() {
-    accelerometerEventStream().listen((AccelerometerEvent event) {
-      if (!isPaused) {
-        moveBasket(event.y * -10); // Adjust the multiplier based on sensitivity
-      }
-    });
-  }
+  // void startTiltControls() {
+  //   accelerometerEventStream().listen((AccelerometerEvent event) {
+  //     if (!isPaused) {
+  //       moveBasket(event.y * -10); // Adjust the multiplier based on sensitivity
+  //     }
+  //   });
+  // }
 
 
   void moveBasket(double delta) {
@@ -301,7 +301,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   @override
   void initState() {
     super.initState();
-    startTiltControls();
+    // startTiltControls();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
         if(Constants.selectedGameType != 'colors'){
