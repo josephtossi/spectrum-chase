@@ -38,7 +38,6 @@ dependencies:
   visibility_detector: ^0.4.0+2
   icons_launcher: ^2.1.7
   google_mobile_ads: ^4.0.0
-  im_animations: ^0.1.2
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +81,7 @@ flutter:
     - lib/assets/basket_7.png
     - lib/assets/sun.png
     - lib/assets/moon.png
+    - lib/assets/unlock.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

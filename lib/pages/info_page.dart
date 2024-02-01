@@ -66,6 +66,9 @@ class _InfoPageState extends State<InfoPage> {
   @override
   void initState() {
     _adsService.createInterstitialAd();
+    Future.delayed(const Duration(seconds: 5), () {
+      _adsService.showInterstitialAd();
+    });
     super.initState();
   }
 
@@ -80,9 +83,6 @@ class _InfoPageState extends State<InfoPage> {
 
   @override
   void dispose() {
-    Future.delayed(const Duration(seconds: 1), () {
-      _adsService.showInterstitialAd();
-    });
     super.dispose();
   }
 
@@ -143,7 +143,8 @@ class _InfoPageState extends State<InfoPage> {
                                         fontWeight: FontWeight.w500),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 4.0,bottom: 20),
+                                    padding: const EdgeInsets.only(
+                                        top: 4.0, bottom: 20),
                                     child: Container(
                                       width: 40,
                                       height: 40,
@@ -163,8 +164,8 @@ class _InfoPageState extends State<InfoPage> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   'Your goal is to catch the specified color or object '
-                                      'while they are falling but beware to avoid others\n\n'
-                                      'You can customise your game play in the settings page \nChoose between 2 different game play types as well',
+                                  'while they are falling but beware to avoid others\n\n'
+                                  'You can customise your game play in the settings page \nChoose between 2 different game play types as well',
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.raleway(
                                       height: 1.5,

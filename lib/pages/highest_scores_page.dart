@@ -80,6 +80,9 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
   @override
   void initState() {
     _adsService.createInterstitialAd();
+    Future.delayed(const Duration(seconds: 5), (){
+      _adsService.showInterstitialAd();
+    });
     SchedulerBinding.instance.addPostFrameCallback((_) {
       List lesserUsers = [];
       for (Map userInTop in widget.topUsersStatistics) {
@@ -110,9 +113,6 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
 
   @override
   void dispose() {
-    Future.delayed(const Duration(seconds: 1), (){
-      _adsService.showInterstitialAd();
-    });
     super.dispose();
   }
 

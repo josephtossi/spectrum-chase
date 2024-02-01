@@ -24,12 +24,14 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   List topUsersStatistics = [];
   Map userInfo = {};
+
   /// variables for ads ///
   AdSize? _adSize;
   late Orientation _currentOrientation = Orientation.portrait;
   bool _isLoaded = false;
   AdManagerBannerAd? _inlineAdaptiveAd;
   static const _insets = 16.0;
+
   double get _adWidth => MediaQuery.of(context).size.width - (2 * _insets);
 
   void _loadAd() async {
@@ -40,7 +42,11 @@ class _MainPageState extends State<MainPage> {
     });
     _inlineAdaptiveAd = AdManagerBannerAd(
       adUnitId: 'ca-app-pub-6797834730215290/7911468356',
-      sizes: [AdSize(width: (MediaQuery.of(context).size.width - (2 * _insets)).toInt(), height: 50)],
+      sizes: [
+        AdSize(
+            width: (MediaQuery.of(context).size.width - (2 * _insets)).toInt(),
+            height: 50)
+      ],
       request: AdManagerAdRequest(),
       listener: AdManagerBannerAdListener(
         onAdLoaded: (Ad ad) async {
@@ -100,11 +106,13 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      try{
+      try {
         MobileAds.instance.initialize();
-      }catch(e){
+      } catch (e) {
         'Error init Ads $e';
       }
+      /// get the attributes that the user have selected ///
+      Constants.getSelectedAttributes();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       DataStorageManager dataStorageManager = DataStorageManager(prefs);
 
@@ -116,7 +124,7 @@ class _MainPageState extends State<MainPage> {
         for (int i = 0; i < 20; i++) {
           topUsersStatistics.add({
             'userName': faker.internet.userName(),
-            'score': generateRandomNumber(230, 5000)
+            'score': generateRandomNumber(230, 7123)
           });
         }
         dataStorageManager.setList('top_users_statistics', topUsersStatistics);
@@ -158,12 +166,12 @@ class _MainPageState extends State<MainPage> {
             _adSize != null) {
           return Align(
               child: Container(
-                width: _adWidth,
-                height: _adSize!.height.toDouble(),
-                child: AdWidget(
-                  ad: _inlineAdaptiveAd!,
-                ),
-              ));
+            width: _adWidth,
+            height: _adSize!.height.toDouble(),
+            child: AdWidget(
+              ad: _inlineAdaptiveAd!,
+            ),
+          ));
         }
         // Reload the ad if the orientation changes.
         if (_currentOrientation != orientation) {
@@ -178,8 +186,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: Constants.selectedBackgroundColor),
+      decoration: BoxDecoration(gradient: Constants.selectedBackgroundColor),
       child: Column(
         children: [
           /// Logo ///
@@ -226,7 +233,8 @@ class _MainPageState extends State<MainPage> {
                           ),
                           child: Container(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(25)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(17)),
                                 // shape: BoxShape.circle,
                                 gradient: Constants.selectedBackgroundColor),
                             child: Center(
@@ -291,7 +299,7 @@ class _MainPageState extends State<MainPage> {
                                     Theme.of(context).textTheme.displayLarge,
                                 color: Colors.white,
                                 fontSize:
-                                MediaQuery.of(context).size.width * .09,
+                                    MediaQuery.of(context).size.width * .09,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -322,8 +330,7 @@ class _MainPageState extends State<MainPage> {
                               textStyle:
                                   Theme.of(context).textTheme.displayLarge,
                               color: Colors.white,
-                              fontSize:
-                              MediaQuery.of(context).size.width * .09,
+                              fontSize: MediaQuery.of(context).size.width * .09,
                               fontWeight: FontWeight.bold),
                         ),
                       ],

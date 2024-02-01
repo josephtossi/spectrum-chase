@@ -28,6 +28,8 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _isLoaded = false;
   AdManagerBannerAd? _inlineAdaptiveAd;
   static const _insets = 16.0;
+  bool showAd = false;
+  Function onPressCallback = (){};
 
   double get _adWidth => MediaQuery.of(context).size.width - (2 * _insets);
 
@@ -82,9 +84,22 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  showAdFunction({required Function function}) {
+    showAd = true;
+    onPressCallback = function;
+    setState(() {});
+  }
+
   @override
   void initState() {
-    _adsService.createInterstitialAd();
+    /// todo check if we must put an ad here ///
+    // _adsService.createInterstitialAd();
+    // Future.delayed(const Duration(seconds: 5), () {
+    //   _adsService.showInterstitialAd();
+    // });
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _adsService.createRewardedAd();
+    });
     super.initState();
   }
 
@@ -99,9 +114,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void dispose() {
-    Future.delayed(const Duration(seconds: 1), () {
-      _adsService.showInterstitialAd();
-    });
     super.dispose();
   }
 
@@ -136,8 +148,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Material(
       child: Container(
         padding: const EdgeInsets.only(top: 50),
-        decoration: BoxDecoration(
-            gradient: Constants.selectedBackgroundColor),
+        decoration: BoxDecoration(gradient: Constants.selectedBackgroundColor),
         child: Stack(
           children: [
             Positioned(
@@ -404,10 +415,18 @@ class _SettingsPageState extends State<SettingsPage> {
                               .map((backGroundGradient) {
                             return GestureDetector(
                               onTap: () {
-                                setState(() {
-                                  Constants.selectedBackgroundColor =
-                                      backGroundGradient;
-                                });
+                                showAdFunction(
+                                  function: (){
+                                    setState(() {
+                                      Constants.selectedBackgroundColor =
+                                          backGroundGradient;
+                                      Constants.selectAttribute(
+                                          attributeType: "selectedBackgroundColor",
+                                          attributeValue: Constants.backGroundColors
+                                              .indexOf(backGroundGradient));
+                                    });
+                                  }
+                                );
                               },
                               child: Container(
                                 margin: EdgeInsets.only(right: 6),
@@ -419,9 +438,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                 width: (MediaQuery.of(context).size.width / 5),
                                 child: Constants.selectedBackgroundColor ==
                                         backGroundGradient
-                                    ? Icon(Icons.check,
-                                      size: (MediaQuery.of(context).size.width / 15),
-                                      color: Colors.white,)
+                                    ? Icon(
+                                        Icons.check,
+                                        size:
+                                            (MediaQuery.of(context).size.width /
+                                                15),
+                                        color: Colors.white,
+                                      )
                                     : Container(),
                               ),
                             );
@@ -441,7 +464,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             textAlign: TextAlign.center,
                             style: GoogleFonts.raleway(
                                 textStyle:
-                                Theme.of(context).textTheme.displayLarge,
+                                    Theme.of(context).textTheme.displayLarge,
                                 color: Colors.white,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold),
@@ -454,72 +477,93 @@ class _SettingsPageState extends State<SettingsPage> {
                         margin: EdgeInsets.only(top: 20, right: 0, left: 27),
                         child: ListView(
                           scrollDirection: Axis.horizontal,
-                          children: Constants.gameTypeList
-                              .map((type) {
+                          children: Constants.gameTypeList.map((type) {
                             return GestureDetector(
                               onTap: () {
-                                setState(() {
-                                  Constants.selectedGameType =
-                                      type;
-                                });
+                                showAdFunction(
+                                    function: (){
+                                      setState(() {
+                                        Constants.selectedGameType = type;
+                                        Constants.selectAttribute(
+                                            attributeType: "selectedGameType",
+                                            attributeValue: type);
+                                      });
+                                    }
+                                );
                               },
                               child: Container(
                                 margin: EdgeInsets.only(right: 6),
                                 width: (MediaQuery.of(context).size.width / 5),
                                 child: Stack(
                                   children: [
-                                    type == 'colors' ?
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          color:  Constants.selectedGameType ==
-                                              type ? Colors.blueGrey : Colors.black38,
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(4))),
-                                      child: Center(
-                                        child:
-                                        Image.asset('lib/assets/2938687.png'),
-                                      ),
-                                    )
-                                        : Container(
-                                      decoration: BoxDecoration(
-                                          color:  Constants.selectedGameType ==
-                                              type ? Colors.blueGrey : Colors.black38,
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(4))),
-                                      child: Center(
-                                        child: Row(
-                                          children: [
-                                            Expanded(child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Image.asset('lib/assets/sun.png'),
-                                            )),
-                                            Expanded(child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Image.asset('lib/assets/moon.png'),
-                                            )),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-
-                                    Constants.selectedGameType ==
-                                        type
-                                        ? Positioned(
-                                          right: 5,
-                                          bottom: 5,
-                                          child: Container(
+                                    type == 'colors'
+                                        ? Container(
                                             decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.black38
+                                                color: Constants
+                                                            .selectedGameType ==
+                                                        type
+                                                    ? Colors.blueGrey
+                                                    : Colors.black38,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(4))),
+                                            child: Center(
+                                              child: Image.asset(
+                                                  'lib/assets/2938687.png'),
                                             ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(3.0),
-                                              child: Icon(Icons.check,
-                                      size: 15,
-                                      color: Colors.white,),
+                                          )
+                                        : Container(
+                                            decoration: BoxDecoration(
+                                                color: Constants
+                                                            .selectedGameType ==
+                                                        type
+                                                    ? Colors.blueGrey
+                                                    : Colors.black38,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(4))),
+                                            child: Center(
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                      child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Image.asset(
+                                                        'lib/assets/sun.png'),
+                                                  )),
+                                                  Expanded(
+                                                      child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Image.asset(
+                                                        'lib/assets/moon.png'),
+                                                  )),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        )
+                                    Constants.selectedGameType == type
+                                        ? Positioned(
+                                            right: 5,
+                                            bottom: 5,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.black38),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(3.0),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  size: 15,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          )
                                         : Container(),
                                   ],
                                 ),
@@ -558,11 +602,19 @@ class _SettingsPageState extends State<SettingsPage> {
                           runSpacing: 6,
                           children: List.generate(7, (index) {
                             return GestureDetector(
-                              onTap: (){
-                                setState(() {
-                                  Constants.selectedBasket =
-                                  'lib/assets/basket_${index + 1}.png';
-                                });
+                              onTap: () {
+                                showAdFunction(
+                                    function: (){
+                                      setState(() {
+                                        Constants.selectedBasket =
+                                        'lib/assets/basket_${index + 1}.png';
+                                        Constants.selectAttribute(
+                                            attributeType: "selectedBasket",
+                                            attributeValue:
+                                            'lib/assets/basket_${index + 1}.png');
+                                      });
+                                    }
+                                );
                               },
                               child: Container(
                                 decoration: const BoxDecoration(
@@ -576,10 +628,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                         Color(0x33964ed8)
                                       ]),
                                 ),
-                                width:
-                                    (MediaQuery.of(context).size.width / 3) - 22,
+                                width: (MediaQuery.of(context).size.width / 3) -
+                                    22,
                                 height:
-                                    (MediaQuery.of(context).size.width / 3) - 22,
+                                    (MediaQuery.of(context).size.width / 3) -
+                                        22,
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: Stack(
@@ -588,20 +641,22 @@ class _SettingsPageState extends State<SettingsPage> {
                                         'lib/assets/basket_${index + 1}.png',
                                         fit: BoxFit.scaleDown,
                                       ),
-                                      Constants.selectedBasket == 'lib/assets/basket_${index + 1}.png' ?
-                                      Center(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black38,
-                                            shape: BoxShape.circle
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Icon(Icons.check,
-                                              color: Colors.white,),
-                                          ),
-                                        )
-                                      )
+                                      Constants.selectedBasket ==
+                                              'lib/assets/basket_${index + 1}.png'
+                                          ? Center(
+                                              child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.black38,
+                                                  shape: BoxShape.circle),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ))
                                           : Container()
                                     ],
                                   ),
@@ -617,6 +672,159 @@ class _SettingsPageState extends State<SettingsPage> {
                 _getAdWidget()
               ],
             ),
+
+            /// show continue to watch ad and preserve score ///
+            if (showAd)
+              AnimatedOpacity(
+                duration: const Duration(seconds: 1),
+                opacity: 1.0,
+                child: Container(
+                  color: Colors.black.withOpacity(0.98),
+                  child: Center(
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width * .25,
+                                height: MediaQuery.of(context).size.width * .25,
+                                child: Image.asset('lib/assets/unlock.png')),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 18.0),
+                              child: Text(
+                                'Unlock Customization',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.raleway(
+                                    textStyle: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge,
+                                    color: Colors.white,
+                                    fontSize: MediaQuery.of(context).size.width * .044,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Enhance your gaming experience with a custom background, game type or basket! "
+                                    "Watch a short ad to unlock these special features.",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.alata(
+                                    textStyle: Theme.of(context)
+                                        .textTheme
+                                        .displayLarge,
+                                    color: Colors.white,
+                                    fontSize: MediaQuery.of(context).size.width * .044,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    try {
+                                      _adsService.showRewardedAd(
+                                          doneFunction: () {
+                                            setState(() {
+                                              onPressCallback();
+                                              showAd = false;
+                                            });
+                                          });
+                                    } catch (e) {
+                                      print('error with ad: $e');
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(5)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xffdf446b),
+                                          Color(0xaadf446b)
+                                        ]),
+                                  ),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(14.0),
+                                      child: Text(
+                                        'Watch Ad',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.raleway(
+                                            textStyle: Theme.of(context)
+                                                .textTheme
+                                                .displayLarge,
+                                            color: Colors.white,
+                                            fontSize: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                                .042,
+                                            height: 1.23,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 15.0, left: 15),
+                              child: GestureDetector(
+                                onTap: () {
+                                  showAd = false;
+                                  setState(() {});
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(5)),
+                                    gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xffdf446b),
+                                          Color(0xaadf446b)
+                                        ]),
+                                  ),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(14.0),
+                                      child: Text(
+                                        'Cancel',
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.raleway(
+                                            textStyle: Theme.of(context)
+                                                .textTheme
+                                                .displayLarge,
+                                            color: Colors.white,
+                                            fontSize: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                                .042,
+                                            height: 1.23,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

@@ -38,8 +38,7 @@ class _GameOverState extends State<GameOver> {
   Widget build(BuildContext context) {
     return Material(
       child: Container(
-        decoration: BoxDecoration(
-            gradient: Constants.selectedBackgroundColor),
+        decoration: BoxDecoration(gradient: Constants.selectedBackgroundColor),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,12 +76,12 @@ class _GameOverState extends State<GameOver> {
                           colors: [Color(0xffdf446b), Color(0xffdf446b)]),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Icon(Icons.refresh,
-                        size: MediaQuery.of(context).size.width * .086,
-                        color: Colors.white,
-                      )
-                    ),
+                        padding: const EdgeInsets.all(12.0),
+                        child: Icon(
+                          Icons.refresh,
+                          size: MediaQuery.of(context).size.width * .086,
+                          color: Colors.white,
+                        )),
                   ),
                 ),
               ),
@@ -102,7 +101,8 @@ class _GameOverState extends State<GameOver> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Icon(Icons.home,
+                      child: Icon(
+                        Icons.home,
                         size: MediaQuery.of(context).size.width * .086,
                         color: Colors.white,
                       ),

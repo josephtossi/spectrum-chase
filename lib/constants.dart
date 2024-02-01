@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spectrum_chase/data/data_storage_service.dart';
 
 class Constants {
   static LinearGradient selectedBackgroundColor = LinearGradient(
@@ -9,6 +11,37 @@ class Constants {
   static String selectedBasket = 'lib/assets/basket_1.png';
 
   static String selectedGameType = 'colors';
+
+  static void selectAttribute(
+      {required attributeType, required dynamic attributeValue}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    DataStorageManager dataStorageManager = DataStorageManager(prefs);
+    if (attributeType == 'selectedBackgroundColor') {
+      dataStorageManager.setInt('selectedBackgroundColor', attributeValue);
+    } else if (attributeType == 'selectedBasket') {
+      dataStorageManager.setString('selectedBasket', attributeValue);
+    } else if (attributeType == 'selectedGameType') {
+      dataStorageManager.setString('selectedGameType', attributeValue);
+    }
+  }
+
+  static void getSelectedAttributes() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    DataStorageManager dataStorageManager = DataStorageManager(prefs);
+    int selectedBackgroundColorInt =
+        dataStorageManager.getInt('selectedBackgroundColor') ?? 0;
+    String selectedBasketString =
+        dataStorageManager.getString('selectedBasket') == ''
+            ? 'lib/assets/basket_1.png'
+            : dataStorageManager.getString('selectedBasket');
+    String selectedGameTypeString =
+        dataStorageManager.getString('selectedGameType') == ''
+            ? 'colors'
+            : dataStorageManager.getString('selectedGameType');
+    selectedBackgroundColor = backGroundColors[selectedBackgroundColorInt];
+    selectedBasket = selectedBasketString;
+    selectedGameType = selectedGameTypeString;
+  }
 
   /// ================================= ///
   static List gameTypeList = ['colors', 'sun_moon'];

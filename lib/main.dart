@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:spectrum_chase/pages/falling_objects.dart';
 import 'package:spectrum_chase/pages/main_page.dart';
 
 void main() {

@@ -4,7 +4,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:im_animations/im_animations.dart';
 import 'package:spectrum_chase/constants.dart';
 import 'package:spectrum_chase/models/falling_object.dart';
 import 'package:spectrum_chase/pages/settings_page.dart';
@@ -247,6 +246,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
             fallingObjects[i].opacity = 0;
             if (score % 5 == 0) {
               increaseSpeed();
+              objectSize += .1;
             }
           } else {
             try {
@@ -435,21 +435,19 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(4.0),
-                                  child: HeartBeat(
-                                    child: Container(
-                                      width: 32,
-                                      height: 32,
-                                      decoration: BoxDecoration(
-                                          color: selectedColor,
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(4))),
-                                      child: Center(
-                                        child:
-                                            Constants.selectedGameType == 'colors'
-                                                ? Image.asset(
-                                                    'lib/assets/2938687.png')
-                                                : Image.asset(selectedIcon),
-                                      ),
+                                  child: Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                        color: selectedColor,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(4))),
+                                    child: Center(
+                                      child:
+                                          Constants.selectedGameType == 'colors'
+                                              ? Image.asset(
+                                                  'lib/assets/2938687.png')
+                                              : Image.asset(selectedIcon),
                                     ),
                                   ),
                                 ),
@@ -548,7 +546,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                     duration: const Duration(seconds: 1),
                     opacity: 1.0,
                     child: Container(
-                      color: Colors.black.withOpacity(0.75),
+                      color: Colors.black.withOpacity(0.98),
                       child: Center(
                         child: Material(
                           color: Colors.transparent,
