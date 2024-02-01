@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spectrum_chase/data/data_storage_service.dart';
 
@@ -41,6 +42,11 @@ class Constants {
     selectedBackgroundColor = backGroundColors[selectedBackgroundColorInt];
     selectedBasket = selectedBasketString;
     selectedGameType = selectedGameTypeString;
+    SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
+      statusBarColor: selectedBackgroundColor.colors.last,
+      systemNavigationBarColor: selectedBackgroundColor.colors.last,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ));
   }
 
   /// ================================= ///

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:spectrum_chase/constants.dart';
@@ -424,6 +425,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                           attributeType: "selectedBackgroundColor",
                                           attributeValue: Constants.backGroundColors
                                               .indexOf(backGroundGradient));
+                                      SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
+                                        statusBarColor: Constants.selectedBackgroundColor.colors.last,
+                                        systemNavigationBarColor: Constants.selectedBackgroundColor.colors.last,
+                                        systemNavigationBarIconBrightness: Brightness.light,
+                                      ));
                                     });
                                   }
                                 );
