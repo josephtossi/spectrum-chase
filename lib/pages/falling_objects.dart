@@ -26,7 +26,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   double objectSize = 40.0;
   List<FallingObject> fallingObjects = [];
   int score = 0;
-  Color selectedColor = Colors.red;
+  Color selectedColor = Colors.green;
   String selectedIcon = 'lib/assets/moon.png';
   bool gameOver = false;
   GlobalKey basketKey = GlobalKey();
@@ -127,12 +127,12 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
 
   Color generateRandomColorFromList() {
     List<Color> predefinedColors = [
-      Colors.red,
       Colors.green,
-      Colors.blue,
-      Colors.yellow,
-      Colors.purple,
-      Colors.orange,
+      Colors.red,
+      Colors.deepPurpleAccent,
+      Colors.brown,
+      Colors.amber,
+      Colors.blueGrey,
     ];
 
     Random random = Random();
@@ -222,8 +222,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
               objectSize += .1;
               increaseSpeed();
             }
-          }
-          else {
+          } else {
             try {
               effectsPlayer.play(AssetSource(completionMusicString),
                   volume: effectsVolume);
@@ -295,7 +294,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
     showInstructions = true;
     isPaused = true;
     setState(() {});
-    Timer(const Duration(seconds: 1), () {
+    Timer(const Duration(milliseconds: 1720), () {
       setState(() {
         showInstructions = false;
         isPaused = false;
@@ -511,7 +510,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                           .textTheme
                                           .displayLarge,
                                       color: Colors.white,
-                                      fontSize: 20,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Padding(
@@ -530,6 +529,20 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                                   'lib/assets/2938687.png')
                                               : Image.asset(selectedIcon),
                                     ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Move the basket by moving your finger left and right on the screen',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.raleway(
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .displayLarge,
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ],

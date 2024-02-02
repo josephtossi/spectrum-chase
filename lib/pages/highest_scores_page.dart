@@ -156,18 +156,24 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
               left: 28,
               child: GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_back_ios,color: Colors.white,
-                  size: MediaQuery.of(context).size.width * .05,)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: Icon(Icons.arrow_back_ios,color: Colors.white,
+                    size: MediaQuery.of(context).size.width * .05,),
+                  )),
             ),
             Column(
               children: [
-                Text(
-                  'Top Scores',
-                  style: GoogleFonts.raleway(
-                      textStyle: Theme.of(context).textTheme.displayLarge,
-                      color: const Color(0xffffffff),
-                      fontSize: MediaQuery.of(context).size.width * .07,
-                      fontWeight: FontWeight.bold),
+                Padding(
+                  padding: const EdgeInsets.only(top: 18.0),
+                  child: Text(
+                    'Top Scores',
+                    style: GoogleFonts.raleway(
+                        textStyle: Theme.of(context).textTheme.displayLarge,
+                        color: const Color(0xffffffff),
+                        fontSize: MediaQuery.of(context).size.width * .07,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
                 Flexible(
                   child: ScrollConfiguration(

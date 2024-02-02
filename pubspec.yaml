@@ -44,7 +44,7 @@ dev_dependencies:
     sdk: flutter
 
 icons_launcher:
-  image_path: "lib/assets/launcher.png"
+  image_path: "lib/assets/launcher_icon.png"
   platforms:
     android:
       enable: true
@@ -68,6 +68,7 @@ flutter:
     - lib/assets/basket_1.png
     - lib/assets/4399411.png
     - lib/assets/launcher.png
+    - lib/assets/launcher_icon.png
     - lib/assets/no-bg-logo.png
     - assets/game_music.wav
     - assets/completion.wav
