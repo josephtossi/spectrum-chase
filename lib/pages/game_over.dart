@@ -3,7 +3,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spectrum_chase/constants.dart';
-import 'package:spectrum_chase/services/ads_service.dart';
 
 import '../data/data_storage_service.dart';
 
@@ -18,13 +17,10 @@ class GameOver extends StatefulWidget {
 }
 
 class _GameOverState extends State<GameOver> {
-  AdsService _adsService = AdsService();
-
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _adsService.createInterstitialAd();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       DataStorageManager dataStorageManager = DataStorageManager(prefs);
       Map userMapSaved = dataStorageManager.getMap('user_statistics');
@@ -93,9 +89,6 @@ class _GameOverState extends State<GameOver> {
                 padding: const EdgeInsets.only(top: 15.0),
                 child: GestureDetector(
                   onTap: () {
-                    Future.delayed(const Duration(seconds: 3), () {
-                      _adsService.showInterstitialAd();
-                    });
                     Navigator.pop(context);
                   },
                   child: Container(

@@ -470,113 +470,128 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              togglePause();
-                            },
+                          Expanded(
                             child: Container(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Icon(
-                                isPaused ? Icons.play_arrow : Icons.pause,
-                                size: 35,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 18.0),
-                                child: Text(
-                                  'Score'.toUpperCase(),
-                                  style: GoogleFonts.raleway(
+                              alignment: Alignment.centerLeft,
+                              child: GestureDetector(
+                                onTap: () {
+                                  togglePause();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: Icon(
+                                    isPaused ? Icons.play_arrow : Icons.pause,
+                                    size: 35,
                                     color: Colors.white,
-                                    textStyle: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ),
-                              Text(
-                                '$score',
-                                style: GoogleFonts.raleway(
-                                    textStyle: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge,
-                                    color: Colors.white,
-                                    fontSize: 35,
-                                    height: 1,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                            ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 20.0),
+                          Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                /// Shield elements top ///
-                                protectionSecondsRemaining != 0 ?
                                 Padding(
                                   padding: const EdgeInsets.only(top: 18.0),
-                                  child: Container(
-                                      width: 35,
-                                      height: 35,
-                                      child: Image.asset('lib/assets/sheild.png')),
-                                ) : Container(),
-                                protectionSecondsRemaining != 0 ?
-                                Text(
-                                  '$protectionSecondsRemaining',
-                                  style: GoogleFonts.raleway(
+                                  child: Text(
+                                    'Score'.toUpperCase(),
+                                    style: GoogleFonts.raleway(
+                                      color: Colors.white,
                                       textStyle: Theme.of(context)
                                           .textTheme
                                           .displayLarge,
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ) : Container(),
-
-                                /// catch elements top ///
-                                protectionSecondsRemaining != 0 ?
-                                Container() :
-                                Text(
-                                  'Catch',
-                                  style: GoogleFonts.raleway(
-                                      textStyle: Theme.of(context)
-                                          .textTheme
-                                          .displayLarge,
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                protectionSecondsRemaining != 0 ?
-                                Container() :
-                                Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Container(
-                                    width: 32,
-                                    height: 32,
-                                    decoration: BoxDecoration(
-                                        color: selectedColor,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(4))),
-                                    child: Center(
-                                      child:
-                                          Constants.selectedGameType == 'colors'
-                                              ? Image.asset(
-                                                  'lib/assets/2938687.png')
-                                              : Image.asset(selectedIcon),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
                                     ),
                                   ),
+                                ),
+                                Text(
+                                  '$score',
+                                  style: GoogleFonts.raleway(
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge,
+                                      color: Colors.white,
+                                      fontSize: 35,
+                                      height: 1,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
                           ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 20.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  protectionSecondsRemaining != 0 ?
+                                  Padding(
+                                    padding: const EdgeInsets.only(right:8.0),
+                                    child: Column(
+                                      children: [
+                                        /// Shield elements top ///
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 18.0),
+                                          child: Container(
+                                              width: 35,
+                                              height: 35,
+                                              child: Image.asset('lib/assets/sheild.png')),
+                                        ),
+                                        Text(
+                                          '$protectionSecondsRemaining',
+                                          style: GoogleFonts.raleway(
+                                              textStyle: Theme.of(context)
+                                                  .textTheme
+                                                  .displayLarge,
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ) : Container(),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Container(
+                                          width: 32,
+                                          height: 32,
+                                          decoration: BoxDecoration(
+                                              color: selectedColor,
+                                              borderRadius: const BorderRadius.all(
+                                                  Radius.circular(4))),
+                                          child: Center(
+                                            child:
+                                            Constants.selectedGameType == 'colors'
+                                                ? Image.asset(
+                                                'lib/assets/2938687.png')
+                                                : Image.asset(selectedIcon),
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Catch',
+                                        style: GoogleFonts.raleway(
+                                            textStyle: Theme.of(context)
+                                                .textTheme
+                                                .displayLarge,
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
                         ],
                       )),
                 ),
