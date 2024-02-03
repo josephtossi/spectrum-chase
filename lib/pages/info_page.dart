@@ -134,35 +134,100 @@ class _InfoPageState extends State<InfoPage> {
                               left: 25),
                           child: Column(
                             children: [
-                              Column(
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Text(
-                                    'Catch',
-                                    style: GoogleFonts.raleway(
-                                        textStyle: Theme.of(context)
-                                            .textTheme
-                                            .displayLarge,
-                                        color: Colors.white,
-                                        fontSize: 13.76,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 4.0, bottom: 20),
-                                    child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: const BoxDecoration(
-                                          color: Colors.red,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4))),
-                                      child: Center(
-                                        child: Image.asset(
-                                            'lib/assets/2938687.png'),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Catch',
+                                        style: GoogleFonts.raleway(
+                                            textStyle: Theme.of(context)
+                                                .textTheme
+                                                .displayLarge,
+                                            color: Colors.white,
+                                            fontSize: 13.76,
+                                            fontWeight: FontWeight.w500),
                                       ),
-                                    ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 4.0, bottom: 20),
+                                        child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          decoration: const BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(4))),
+                                          child: Center(
+                                            child: Image.asset(
+                                                'lib/assets/2938687.png'),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Shield',
+                                        style: GoogleFonts.raleway(
+                                            textStyle: Theme.of(context)
+                                                .textTheme
+                                                .displayLarge,
+                                            color: Colors.white,
+                                            fontSize: 13.76,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 4.0, bottom: 20),
+                                        child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Center(
+                                            child: Image.asset(
+                                                'lib/assets/sheild.png'),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Gifts',
+                                        style: GoogleFonts.raleway(
+                                            textStyle: Theme.of(context)
+                                                .textTheme
+                                                .displayLarge,
+                                            color: Colors.white,
+                                            fontSize: 13.76,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 4.0, bottom: 20),
+                                        child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Center(
+                                            child: Transform.scale(
+                                              scale: 2,
+                                              child: Image.asset(
+                                                  'lib/assets/gift.png'),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

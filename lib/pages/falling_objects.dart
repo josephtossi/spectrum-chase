@@ -114,6 +114,9 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
       isPaused = !isPaused;
       if (isPaused) {
         advancedPlayer.stop();
+        Future.delayed(const Duration(seconds: 3), () {
+          adsService.showInterstitialAd();
+        });
       } else {
         advancedPlayer.play(AssetSource(gameMusicString), volume: musicVolume);
       }
@@ -369,6 +372,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   @override
   void initState() {
     super.initState();
+    adsService.createInterstitialAd();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
         objectSpeed = 5.5;
