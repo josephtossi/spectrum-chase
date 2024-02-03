@@ -124,7 +124,7 @@ class _MainPageState extends State<MainPage> {
         for (int i = 0; i < 20; i++) {
           topUsersStatistics.add({
             'userName': faker.internet.userName(),
-            'score': generateRandomNumber(230, 7123)
+            'score': generateRandomNumber(892, 9357)
           });
         }
         dataStorageManager.setList('top_users_statistics', topUsersStatistics);

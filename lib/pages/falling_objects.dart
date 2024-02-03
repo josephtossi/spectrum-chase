@@ -4,11 +4,12 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spectrum_chase/constants.dart';
+import 'package:spectrum_chase/data/data_storage_service.dart';
 import 'package:spectrum_chase/models/falling_object.dart';
 import 'package:spectrum_chase/pages/settings_page.dart';
 import 'package:spectrum_chase/services/ads_service.dart';
-
 import 'game_over.dart';
 
 class FallingObjectsPage extends StatefulWidget {
@@ -30,15 +31,37 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   String selectedIcon = 'lib/assets/moon.png';
   bool gameOver = false;
   GlobalKey basketKey = GlobalKey();
+  int protectionSecondsRemaining = 0;
+  late Timer timer;
 
   /// variables regarding audio ///
   late AudioPlayer advancedPlayer;
   late AudioPlayer effectsPlayer;
-  String gameMusicString = "game_music.wav";
+  String gameMusicString = "game_music.mp3";
   String bonusMusicString = "bonus.wav";
   String completionMusicString = "completion.wav";
   AdsService adsService = AdsService();
   late FallingObject selectedFallingObject;
+
+  void startTimerForProtection() {
+    if (protectionSecondsRemaining > 0) {
+      return;
+    }
+    protectionSecondsRemaining = 7;
+    const oneSec = const Duration(seconds: 1);
+    timer = Timer.periodic(
+      oneSec,
+          (Timer timer) {
+        setState(() {
+          if (protectionSecondsRemaining < 1) {
+            timer.cancel();
+          } else {
+            protectionSecondsRemaining--;
+          }
+        });
+      },
+    );
+  }
 
   void initPlayer() {
     advancedPlayer = AudioPlayer();
@@ -151,6 +174,21 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
 
   void generateFallingObject() {
     setState(() {
+      // Set the probability of generating a present
+      bool isPresent = Random().nextInt(100) < 6;
+      // Set the probability of generating a shield
+      bool isShield = Random().nextInt(100) < 3;
+
+      FallingObjectType objectType;
+
+      if (isPresent) {
+        objectType = FallingObjectType.PRESENT;
+      } else if (isShield) {
+        objectType = FallingObjectType.SHIELD;
+      } else {
+        objectType = FallingObjectType.NORMAL;
+      }
+
       fallingObjects.add(
         FallingObject(
           opacity: 1,
@@ -162,6 +200,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
               : Colors.transparent,
           top: 80,
           left: getRandomPosition(),
+          type: objectType,
         ),
       );
     });
@@ -182,6 +221,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                   (objectSpeed > 8 ? objectSpeed / 2 : objectSpeed),
               icon: object.icon,
               color: object.color,
+              type: object.type,
               left: object.left,
             );
           })
@@ -209,52 +249,70 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
       );
       if (isBoxVisible(objectBox, sliderBottom) &&
           boxIntersect(basketBox, objectBox)) {
-        /// For gaming colors ///
-        if (Constants.selectedGameType == 'colors') {
-          if (selectedColor == fallingObjects[i].color) {
-            try {
-              effectsPlayer.play(AssetSource(bonusMusicString),
-                  volume: effectsVolume);
-            } catch (e) {}
-            score++;
-            fallingObjects[i].opacity = 0;
-            if (score % 5 == 0) {
-              objectSize += .1;
-              increaseSpeed();
-            }
-          } else {
-            try {
-              effectsPlayer.play(AssetSource(completionMusicString),
-                  volume: effectsVolume);
-            } catch (e) {}
-            if (!showAd) {
-              showAdFunction();
-              selectedFallingObject = fallingObjects[i];
+        if(fallingObjects[i].type == FallingObjectType.SHIELD){
+          startTimerForProtection();
+          fallingObjects[i].opacity = 0;
+        }else{
+          /// For gaming colors ///
+          if (Constants.selectedGameType == 'colors') {
+            if (selectedColor == fallingObjects[i].color ||
+                fallingObjects[i].type == FallingObjectType.PRESENT) {
+              try {
+                effectsPlayer.play(AssetSource(bonusMusicString),
+                    volume: effectsVolume);
+              } catch (e) {}
+              if (fallingObjects[i].type == FallingObjectType.PRESENT) {
+                score += 2;
+              } else {
+                score++;
+              }
+              fallingObjects[i].opacity = 0;
+              if (score % 5 == 0) {
+                objectSize += .1;
+                increaseSpeed();
+              }
+            } else {
+              if(protectionSecondsRemaining == 0){
+                try {
+                  effectsPlayer.play(AssetSource(completionMusicString),
+                      volume: effectsVolume);
+                } catch (e) {}
+                if (!showAd) {
+                  showAdFunction();
+                  selectedFallingObject = fallingObjects[i];
+                }
+              }
             }
           }
-        }
-
-        /// For Sun and moon game ///
-        else {
-          if (selectedIcon == fallingObjects[i].icon) {
-            try {
-              effectsPlayer.play(AssetSource(bonusMusicString),
-                  volume: effectsVolume);
-            } catch (e) {}
-            score++;
-            fallingObjects[i].opacity = 0;
-            if (score % 5 == 0) {
-              increaseSpeed();
-              objectSize += .1;
-            }
-          } else {
-            try {
-              effectsPlayer.play(AssetSource(completionMusicString),
-                  volume: effectsVolume);
-            } catch (e) {}
-            if (!showAd) {
-              showAdFunction();
-              selectedFallingObject = fallingObjects[i];
+          /// For Sun and moon game ///
+          else {
+            if (selectedIcon == fallingObjects[i].icon ||
+                fallingObjects[i].type == FallingObjectType.PRESENT) {
+              try {
+                effectsPlayer.play(AssetSource(bonusMusicString),
+                    volume: effectsVolume);
+              } catch (e) {}
+              if (fallingObjects[i].type == FallingObjectType.PRESENT) {
+                score += 2;
+              } else {
+                score++;
+              }
+              fallingObjects[i].opacity = 0;
+              if (score % 5 == 0) {
+                increaseSpeed();
+                objectSize += .1;
+              }
+            } else {
+              if(protectionSecondsRemaining == 0){
+                try {
+                  effectsPlayer.play(AssetSource(completionMusicString),
+                      volume: effectsVolume);
+                } catch (e) {}
+                if (!showAd) {
+                  showAdFunction();
+                  selectedFallingObject = fallingObjects[i];
+                }
+              }
             }
           }
         }
@@ -313,6 +371,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
+        objectSpeed = 5.5;
         if (Constants.selectedGameType != 'colors') {
           selectedColor = Colors.transparent;
           selectedIcon = generateRandomSunOrMoon();
@@ -332,6 +391,20 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   void dispose() {
     advancedPlayer.stop();
     advancedPlayer.dispose();
+    try {
+      SchedulerBinding.instance.addPostFrameCallback((_) async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        DataStorageManager dataStorageManager = DataStorageManager(prefs);
+        Map userMapSaved = dataStorageManager.getMap('user_statistics');
+        if (userMapSaved.isNotEmpty) {
+          if (userMapSaved['score'] < score) {
+            userMapSaved['score'] = score;
+            dataStorageManager.setMap('user_statistics', userMapSaved);
+          }
+        }
+        setState(() {});
+      });
+    } catch (e) {}
     super.dispose();
   }
 
@@ -355,16 +428,27 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                     left: object.left,
                     child: Opacity(
                       opacity: object.opacity,
-                      child: Container(
-                        key: object.key,
-                        width: objectSize,
-                        height: objectSize,
-                        decoration: BoxDecoration(
-                            color: object.color,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4))),
-                        child: Center(
-                          child: Image.asset(object.icon),
+                      child: Transform.scale(
+                        scale: object.type == FallingObjectType.PRESENT ? 2 : 1,
+                        child: Container(
+                          key: object.key,
+                          width: objectSize,
+                          height: objectSize,
+                          decoration: BoxDecoration(
+                              color: object.type == FallingObjectType.PRESENT
+                                  || object.type == FallingObjectType.SHIELD
+                                  ? Colors.transparent
+                                  : object.color,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(4))),
+                          child: Center(
+                            child: Image.asset(
+                                object.type == FallingObjectType.PRESENT
+                                    ? 'lib/assets/gift.png'
+                                    : object.type == FallingObjectType.SHIELD?
+                                    'lib/assets/sheild.png'
+                                    : object.icon),
+                          ),
                         ),
                       ),
                     ),
@@ -432,6 +516,42 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                /// Shield elements top ///
+                                protectionSecondsRemaining != 0 ?
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 18.0),
+                                  child: Container(
+                                      width: 35,
+                                      height: 35,
+                                      child: Image.asset('lib/assets/sheild.png')),
+                                ) : Container(),
+                                protectionSecondsRemaining != 0 ?
+                                Text(
+                                  '$protectionSecondsRemaining',
+                                  style: GoogleFonts.raleway(
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge,
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ) : Container(),
+
+                                /// catch elements top ///
+                                protectionSecondsRemaining != 0 ?
+                                Container() :
+                                Text(
+                                  'Catch',
+                                  style: GoogleFonts.raleway(
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge,
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                protectionSecondsRemaining != 0 ?
+                                Container() :
                                 Padding(
                                   padding: const EdgeInsets.all(4.0),
                                   child: Container(

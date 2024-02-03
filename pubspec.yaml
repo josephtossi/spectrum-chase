@@ -70,7 +70,7 @@ flutter:
     - lib/assets/launcher.png
     - lib/assets/launcher_icon.png
     - lib/assets/no-bg-logo.png
-    - assets/game_music.wav
+    - assets/game_music.mp3
     - assets/completion.wav
     - assets/bonus.wav
     - lib/assets/basket_1.png
@@ -83,6 +83,8 @@ flutter:
     - lib/assets/sun.png
     - lib/assets/moon.png
     - lib/assets/unlock.png
+    - lib/assets/gift.png
+    - lib/assets/sheild.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
