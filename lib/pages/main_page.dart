@@ -72,6 +72,8 @@ class _MainPageState extends State<MainPage> {
           onFailed: (error, message) => print('Initialization Failed: $error $message'),
         );
         _adsService.createBannerAd();
+        _adsService.createInterstitialAd();
+        _adsService.createRewardedAd();
       } catch (e) {
         'Error init Ads $e';
       }

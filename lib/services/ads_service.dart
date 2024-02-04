@@ -2,15 +2,15 @@ import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 class AdsService {
   /// functions ///
-
   void createBannerAd() {
     UnityAds.load(
       placementId: 'Banner_Android',
       onComplete: (placementId) {
         print('Load Complete $placementId');
       },
-      onFailed: (placementId, error, message) =>
-          print('Load Failed $placementId: $error $message'),
+      onFailed: (placementId, error, message) {
+        createBannerAd();
+      },
     );
   }
 
@@ -20,8 +20,9 @@ class AdsService {
       onComplete: (placementId) {
         print('Load Complete $placementId');
       },
-      onFailed: (placementId, error, message) =>
-          print('Load Failed $placementId: $error $message'),
+      onFailed: (placementId, error, message) {
+        createInterstitialAd();
+      },
     );
   }
 
@@ -43,8 +44,9 @@ class AdsService {
       onComplete: (placementId) {
         print('Load Complete $placementId');
       },
-      onFailed: (placementId, error, message) =>
-          print('Load Failed $placementId: $error $message'),
+      onFailed: (placementId, error, message) {
+        createRewardedAd();
+      },
     );
   }
 
