@@ -66,7 +66,7 @@ class _MainPageState extends State<MainPage> {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       try {
         UnityAds.init(
-          testMode: true,
+          testMode: false,
           gameId: '5545987',
           onComplete: () => print('Initialization Complete'),
           onFailed: (error, message) => print('Initialization Failed: $error $message'),
