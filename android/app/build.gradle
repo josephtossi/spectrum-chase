@@ -97,7 +97,7 @@ dependencies {
     implementation "com.android.billingclient:billing:$billing_version"
 
     implementation 'com.android.support:multidex:2.0.1'
-    implementation 'com.google.android.gms:play-services-ads:21.3.0'
+//    implementation 'com.google.android.gms:play-services-ads:21.3.0'
 
     // This dependency is downloaded from the Google’s Maven repository.
     // So, make sure you also include that repository in your project's build.gradle file.

@@ -3,7 +3,6 @@ import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spectrum_chase/constants.dart';
 import 'package:spectrum_chase/data/data_storage_service.dart';
@@ -11,7 +10,13 @@ import 'package:spectrum_chase/pages/falling_objects.dart';
 import 'package:spectrum_chase/pages/highest_scores_page.dart';
 import 'package:spectrum_chase/pages/info_page.dart';
 import 'package:spectrum_chase/pages/settings_page.dart';
+import 'package:spectrum_chase/services/ads_service.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+
+// https://cloud.unity.com/home/organizations/18967854237258
+// 5545987
+// https://cloud.unity.com/home/organizations/18967854237258/projects/55e23a92-13ad-48d9-99e0-267605ae390c/monetization/overview
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -22,56 +27,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  AdsService _adsService = AdsService();
   List topUsersStatistics = [];
   Map userInfo = {};
-
-  /// variables for ads ///
-  AdSize? _adSize;
-  late Orientation _currentOrientation = Orientation.portrait;
-  bool _isLoaded = false;
-  AdManagerBannerAd? _inlineAdaptiveAd;
-  static const _insets = 16.0;
-
-  double get _adWidth => MediaQuery.of(context).size.width - (2 * _insets);
-
-  void _loadAd() async {
-    await _inlineAdaptiveAd?.dispose();
-    setState(() {
-      _inlineAdaptiveAd = null;
-      _isLoaded = false;
-    });
-    _inlineAdaptiveAd = AdManagerBannerAd(
-      adUnitId: 'ca-app-pub-6797834730215290/7911468356',
-      sizes: [
-        AdSize(
-            width: (MediaQuery.of(context).size.width - (2 * _insets)).toInt(),
-            height: 50)
-      ],
-      request: AdManagerAdRequest(),
-      listener: AdManagerBannerAdListener(
-        onAdLoaded: (Ad ad) async {
-          print('Inline adaptive banner loaded: ${ad.responseInfo}');
-          AdManagerBannerAd bannerAd = (ad as AdManagerBannerAd);
-          final AdSize? size = await bannerAd.getPlatformAdSize();
-          if (size == null) {
-            print('Error: getPlatformAdSize() returned null for $bannerAd');
-            return;
-          }
-
-          setState(() {
-            _inlineAdaptiveAd = bannerAd;
-            _isLoaded = true;
-            _adSize = size;
-          });
-        },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          print('Inline adaptive banner failedToLoad: $error');
-          ad.dispose();
-        },
-      ),
-    );
-    await _inlineAdaptiveAd!.load();
-  }
 
   int generateRandomNumber(int min, int max) {
     final Random random = Random();
@@ -107,10 +65,17 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       try {
-        MobileAds.instance.initialize();
+        UnityAds.init(
+          testMode: true,
+          gameId: '5545987',
+          onComplete: () => print('Initialization Complete'),
+          onFailed: (error, message) => print('Initialization Failed: $error $message'),
+        );
+        _adsService.createBannerAd();
       } catch (e) {
         'Error init Ads $e';
       }
+
       /// get the attributes that the user have selected ///
       Constants.getSelectedAttributes();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -146,41 +111,12 @@ class _MainPageState extends State<MainPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _currentOrientation = MediaQuery.of(context).orientation;
-      _loadAd();
-    });
+    SchedulerBinding.instance.addPostFrameCallback((_) async {});
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Widget _getAdWidget() {
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        if (_currentOrientation == orientation &&
-            _inlineAdaptiveAd != null &&
-            _isLoaded &&
-            _adSize != null) {
-          return Align(
-              child: Container(
-            width: _adWidth,
-            height: _adSize!.height.toDouble(),
-            child: AdWidget(
-              ad: _inlineAdaptiveAd!,
-            ),
-          ));
-        }
-        // Reload the ad if the orientation changes.
-        if (_currentOrientation != orientation) {
-          _currentOrientation = orientation;
-          _loadAd();
-        }
-        return Container();
-      },
-    );
   }
 
   @override
@@ -436,7 +372,18 @@ class _MainPageState extends State<MainPage> {
                 ),
               )),
 
-          _getAdWidget()
+          /// Unity Ads ///
+          Container(
+            height: 50,
+            width: MediaQuery.of(context).size.width,
+            child: UnityBannerAd(
+              placementId: 'Banner_Android',
+              onLoad: (placementId) => print('Banner loaded: $placementId'),
+              onClick: (placementId) => print('Banner clicked: $placementId'),
+              onShown: (placementId) => print('Banner shown: $placementId'),
+              onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
+            ),
+          )
         ],
       ),
     );

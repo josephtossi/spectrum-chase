@@ -37,7 +37,8 @@ dependencies:
   shared_preferences: ^2.2.2
   visibility_detector: ^0.4.0+2
   icons_launcher: ^2.1.7
-  google_mobile_ads: ^4.0.0
+#  google_mobile_ads: ^4.0.0
+  unity_ads_plugin: ^0.3.11
 
 dev_dependencies:
   flutter_test:

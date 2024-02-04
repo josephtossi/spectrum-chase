@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:spectrum_chase/constants.dart';
 import 'package:spectrum_chase/my_behavior.dart';
 import 'package:spectrum_chase/services/ads_service.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 double musicVolume = 1;
 double effectsVolume = 1;
@@ -24,54 +24,9 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   /// variables for ads ///
   AdsService _adsService = AdsService();
-  AdSize? _adSize;
-  late Orientation _currentOrientation = Orientation.portrait;
-  bool _isLoaded = false;
-  AdManagerBannerAd? _inlineAdaptiveAd;
   static const _insets = 16.0;
   bool showAd = false;
-  Function onPressCallback = (){};
-
-  double get _adWidth => MediaQuery.of(context).size.width - (2 * _insets);
-
-  void _loadAd() async {
-    await _inlineAdaptiveAd?.dispose();
-    setState(() {
-      _inlineAdaptiveAd = null;
-      _isLoaded = false;
-    });
-    _inlineAdaptiveAd = AdManagerBannerAd(
-      adUnitId: 'ca-app-pub-6797834730215290/7911468356',
-      sizes: [
-        AdSize(
-            width: (MediaQuery.of(context).size.width - (2 * _insets)).toInt(),
-            height: 50)
-      ],
-      request: AdManagerAdRequest(),
-      listener: AdManagerBannerAdListener(
-        onAdLoaded: (Ad ad) async {
-          print('Inline adaptive banner loaded: ${ad.responseInfo}');
-          AdManagerBannerAd bannerAd = (ad as AdManagerBannerAd);
-          final AdSize? size = await bannerAd.getPlatformAdSize();
-          if (size == null) {
-            print('Error: getPlatformAdSize() returned null for $bannerAd');
-            return;
-          }
-
-          setState(() {
-            _inlineAdaptiveAd = bannerAd;
-            _isLoaded = true;
-            _adSize = size;
-          });
-        },
-        onAdFailedToLoad: (Ad ad, LoadAdError error) {
-          print('Inline adaptive banner failedToLoad: $error');
-          ad.dispose();
-        },
-      ),
-    );
-    await _inlineAdaptiveAd!.load();
-  }
+  Function onPressCallback = () {};
 
   String formatNumber(int number) {
     if (number < 1000) {
@@ -93,11 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
-    /// todo check if we must put an ad here ///
-    // _adsService.createInterstitialAd();
-    // Future.delayed(const Duration(seconds: 5), () {
-    //   _adsService.showInterstitialAd();
-    // });
+    _adsService.createBannerAd();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _adsService.createRewardedAd();
     });
@@ -107,41 +58,12 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _currentOrientation = MediaQuery.of(context).orientation;
-      _loadAd();
-    });
+    SchedulerBinding.instance.addPostFrameCallback((_) async {});
   }
 
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Widget _getAdWidget() {
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        if (_currentOrientation == orientation &&
-            _inlineAdaptiveAd != null &&
-            _isLoaded &&
-            _adSize != null) {
-          return Align(
-              child: Container(
-            width: _adWidth,
-            height: _adSize!.height.toDouble(),
-            child: AdWidget(
-              ad: _inlineAdaptiveAd!,
-            ),
-          ));
-        }
-        // Reload the ad if the orientation changes.
-        if (_currentOrientation != orientation) {
-          _currentOrientation = orientation;
-          _loadAd();
-        }
-        return Container();
-      },
-    );
   }
 
   @override
@@ -422,23 +344,27 @@ class _SettingsPageState extends State<SettingsPage> {
                               .map((backGroundGradient) {
                             return GestureDetector(
                               onTap: () {
-                                showAdFunction(
-                                  function: (){
-                                    setState(() {
-                                      Constants.selectedBackgroundColor =
-                                          backGroundGradient;
-                                      Constants.selectAttribute(
-                                          attributeType: "selectedBackgroundColor",
-                                          attributeValue: Constants.backGroundColors
-                                              .indexOf(backGroundGradient));
-                                      SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
-                                        statusBarColor: Constants.selectedBackgroundColor.colors.last,
-                                        systemNavigationBarColor: Constants.selectedBackgroundColor.colors.last,
-                                        systemNavigationBarIconBrightness: Brightness.light,
-                                      ));
-                                    });
-                                  }
-                                );
+                                showAdFunction(function: () {
+                                  setState(() {
+                                    Constants.selectedBackgroundColor =
+                                        backGroundGradient;
+                                    Constants.selectAttribute(
+                                        attributeType:
+                                            "selectedBackgroundColor",
+                                        attributeValue: Constants
+                                            .backGroundColors
+                                            .indexOf(backGroundGradient));
+                                    SystemChrome.setSystemUIOverlayStyle(
+                                        SystemUiOverlayStyle(
+                                      statusBarColor: Constants
+                                          .selectedBackgroundColor.colors.last,
+                                      systemNavigationBarColor: Constants
+                                          .selectedBackgroundColor.colors.last,
+                                      systemNavigationBarIconBrightness:
+                                          Brightness.light,
+                                    ));
+                                  });
+                                });
                               },
                               child: Container(
                                 margin: EdgeInsets.only(right: 6),
@@ -492,16 +418,14 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: Constants.gameTypeList.map((type) {
                             return GestureDetector(
                               onTap: () {
-                                showAdFunction(
-                                    function: (){
-                                      setState(() {
-                                        Constants.selectedGameType = type;
-                                        Constants.selectAttribute(
-                                            attributeType: "selectedGameType",
-                                            attributeValue: type);
-                                      });
-                                    }
-                                );
+                                showAdFunction(function: () {
+                                  setState(() {
+                                    Constants.selectedGameType = type;
+                                    Constants.selectAttribute(
+                                        attributeType: "selectedGameType",
+                                        attributeValue: type);
+                                  });
+                                });
                               },
                               child: Container(
                                 margin: EdgeInsets.only(right: 6),
@@ -615,18 +539,16 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: List.generate(7, (index) {
                             return GestureDetector(
                               onTap: () {
-                                showAdFunction(
-                                    function: (){
-                                      setState(() {
-                                        Constants.selectedBasket =
+                                showAdFunction(function: () {
+                                  setState(() {
+                                    Constants.selectedBasket =
                                         'lib/assets/basket_${index + 1}.png';
-                                        Constants.selectAttribute(
-                                            attributeType: "selectedBasket",
-                                            attributeValue:
+                                    Constants.selectAttribute(
+                                        attributeType: "selectedBasket",
+                                        attributeValue:
                                             'lib/assets/basket_${index + 1}.png');
-                                      });
-                                    }
-                                );
+                                  });
+                                });
                               },
                               child: Container(
                                 decoration: const BoxDecoration(
@@ -677,11 +599,23 @@ class _SettingsPageState extends State<SettingsPage> {
                             );
                           }),
                         ),
+                      ),
+
+                      /// Unity Ads ///
+                      Container(
+                        height: 50,
+                        width: MediaQuery.of(context).size.width,
+                        child: UnityBannerAd(
+                          placementId: 'Banner_Android',
+                          onLoad: (placementId) => print('Banner loaded: $placementId'),
+                          onClick: (placementId) => print('Banner clicked: $placementId'),
+                          onShown: (placementId) => print('Banner shown: $placementId'),
+                          onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
+                        ),
                       )
                     ],
                   ),
                 )),
-                _getAdWidget()
               ],
             ),
 
@@ -715,7 +649,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                         .textTheme
                                         .displayLarge,
                                     color: Colors.white,
-                                    fontSize: MediaQuery.of(context).size.width * .044,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            .044,
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -723,14 +659,16 @@ class _SettingsPageState extends State<SettingsPage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 "Enhance your gaming experience with a custom background, game type or basket! "
-                                    "Watch a short ad to unlock these special features.",
+                                "Watch a short ad to unlock these special features.",
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.alata(
                                     textStyle: Theme.of(context)
                                         .textTheme
                                         .displayLarge,
                                     color: Colors.white,
-                                    fontSize: MediaQuery.of(context).size.width * .044,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            .044,
                                     fontWeight: FontWeight.w400),
                               ),
                             ),
@@ -742,11 +680,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                     try {
                                       _adsService.showRewardedAd(
                                           doneFunction: () {
-                                            setState(() {
-                                              onPressCallback();
-                                              showAd = false;
-                                            });
-                                          });
+                                        setState(() {
+                                          onPressCallback();
+                                          showAd = false;
+                                        });
+                                      });
                                     } catch (e) {
                                       print('error with ad: $e');
                                     }
@@ -754,8 +692,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(5)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5)),
                                     gradient: LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
@@ -776,8 +714,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                                 .displayLarge,
                                             color: Colors.white,
                                             fontSize: MediaQuery.of(context)
-                                                .size
-                                                .width *
+                                                    .size
+                                                    .width *
                                                 .042,
                                             height: 1.23,
                                             fontWeight: FontWeight.bold),
@@ -788,8 +726,8 @@ class _SettingsPageState extends State<SettingsPage> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 15.0, left: 15),
+                              padding:
+                                  const EdgeInsets.only(right: 15.0, left: 15),
                               child: GestureDetector(
                                 onTap: () {
                                   showAd = false;
@@ -797,8 +735,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(5)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5)),
                                     gradient: LinearGradient(
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
@@ -819,8 +757,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                                 .displayLarge,
                                             color: Colors.white,
                                             fontSize: MediaQuery.of(context)
-                                                .size
-                                                .width *
+                                                    .size
+                                                    .width *
                                                 .042,
                                             height: 1.23,
                                             fontWeight: FontWeight.bold),
