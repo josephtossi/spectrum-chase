@@ -6,8 +6,8 @@ class AdsService {
 
   void loadAds() {
     createRewardedAd(placementId: 'Rewarded_Android', doneFunction: (){});
-    createRewardedAd(placementId: 'Rewarded_Android2', doneFunction: (){});
-    createRewardedAd(placementId: 'Rewarded_Android3', doneFunction: (){});
+    // createRewardedAd(placementId: 'Rewarded_Android2', doneFunction: (){});
+    // createRewardedAd(placementId: 'Rewarded_Android3', doneFunction: (){});
     createRewardedAd(placementId: 'Rewarded_Android4', doneFunction: (){});
     createBannerAd();
     createInterstitialAd();
