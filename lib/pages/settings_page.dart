@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -49,9 +51,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     _adsService.createBannerAd();
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _adsService.createRewardedAd();
-    });
+    _adsService.createInterstitialAd();
     super.initState();
   }
 
@@ -602,15 +602,18 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
 
                       /// Unity Ads ///
-                      Container(
-                        height: 50,
-                        width: MediaQuery.of(context).size.width,
-                        child: UnityBannerAd(
-                          placementId: 'Banner_Android',
-                          onLoad: (placementId) => print('Banner loaded: $placementId'),
-                          onClick: (placementId) => print('Banner clicked: $placementId'),
-                          onShown: (placementId) => print('Banner shown: $placementId'),
-                          onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 18.0),
+                        child: Container(
+                          height: 50,
+                          width: MediaQuery.of(context).size.width,
+                          child: UnityBannerAd(
+                            placementId: 'Banner_Android',
+                            onLoad: (placementId) => print('Banner loaded: $placementId'),
+                            onClick: (placementId) => print('Banner clicked: $placementId'),
+                            onShown: (placementId) => print('Banner shown: $placementId'),
+                            onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
+                          ),
                         ),
                       )
                     ],
@@ -678,7 +681,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                 onTap: () {
                                   setState(() {
                                     try {
-                                      _adsService.showRewardedAd(
+                                      _adsService.createRewardedAd(
+                                        placementId: 'Rewarded_Android',
                                           doneFunction: () {
                                         setState(() {
                                           onPressCallback();

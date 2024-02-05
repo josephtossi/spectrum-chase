@@ -372,6 +372,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   @override
   void initState() {
     super.initState();
+    adsService.createBannerAd();
     adsService.createInterstitialAd();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
@@ -381,7 +382,6 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
           selectedIcon = generateRandomSunOrMoon();
         }
       });
-      adsService.createRewardedAd();
       showInstructionsFunction();
       basketPosition = (MediaQuery.of(context).size.width / 2) - 42.5;
       try {
@@ -726,7 +726,8 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                       setState(() {
                                         try {
                                           advancedPlayer.pause();
-                                          adsService.showRewardedAd(
+                                          adsService.createRewardedAd(
+                                              placementId: 'Rewarded_Android4',
                                               doneFunction: () {
                                             setState(() {
                                               objectSpeed = 5.5;

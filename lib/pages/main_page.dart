@@ -68,12 +68,12 @@ class _MainPageState extends State<MainPage> {
         UnityAds.init(
           testMode: false,
           gameId: '5545987',
-          onComplete: () => print('Initialization Complete'),
+          onComplete: (){
+            _adsService.createBannerAd();
+            _adsService.createInterstitialAd();
+          },
           onFailed: (error, message) => print('Initialization Failed: $error $message'),
         );
-        _adsService.createBannerAd();
-        _adsService.createInterstitialAd();
-        _adsService.createRewardedAd();
       } catch (e) {
         'Error init Ads $e';
       }
