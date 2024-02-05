@@ -39,7 +39,6 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
 
   @override
   void initState() {
-    _adsService.createBannerAd();
     _adsService.createInterstitialAd();
     Future.delayed(const Duration(seconds: 5), (){
       _adsService.showInterstitialAd();
@@ -71,20 +70,6 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Widget _getAdWidget() {
-    return Container(
-      height: 50,
-      width: MediaQuery.of(context).size.width,
-      child: UnityBannerAd(
-        placementId: 'Banner_Android',
-        onLoad: (placementId) => print('Banner loaded: $placementId'),
-        onClick: (placementId) => print('Banner clicked: $placementId'),
-        onShown: (placementId) => print('Banner shown: $placementId'),
-        onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
-      ),
-    );
   }
 
   @override
@@ -208,10 +193,6 @@ class _HighestScoresPageState extends State<HighestScoresPage> {
                           );
                         }).toList()),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: _getAdWidget(),
                 ),
               ],
             ),

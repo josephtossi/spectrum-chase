@@ -68,11 +68,11 @@ class _MainPageState extends State<MainPage> {
         UnityAds.init(
           testMode: false,
           gameId: '5545987',
-          onComplete: (){
-            _adsService.createBannerAd();
-            _adsService.createInterstitialAd();
+          onComplete: () {
+            _adsService.loadAds();
           },
-          onFailed: (error, message) => print('Initialization Failed: $error $message'),
+          onFailed: (error, message) =>
+              print('Initialization Failed: $error $message'),
         );
       } catch (e) {
         'Error init Ads $e';
@@ -373,19 +373,6 @@ class _MainPageState extends State<MainPage> {
                   ],
                 ),
               )),
-
-          /// Unity Ads ///
-          Container(
-            height: 50,
-            width: MediaQuery.of(context).size.width,
-            child: UnityBannerAd(
-              placementId: 'Banner_Android',
-              onLoad: (placementId) => print('Banner loaded: $placementId'),
-              onClick: (placementId) => print('Banner clicked: $placementId'),
-              onShown: (placementId) => print('Banner shown: $placementId'),
-              onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
-            ),
-          )
         ],
       ),
     );

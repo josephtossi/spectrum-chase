@@ -372,7 +372,6 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
   @override
   void initState() {
     super.initState();
-    adsService.createBannerAd();
     adsService.createInterstitialAd();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
@@ -727,7 +726,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                         try {
                                           advancedPlayer.pause();
                                           adsService.createRewardedAd(
-                                              placementId: 'Rewarded_Android4',
+                                            loadAd: true,
                                               doneFunction: () {
                                             setState(() {
                                               objectSpeed = 5.5;

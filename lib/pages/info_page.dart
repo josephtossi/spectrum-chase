@@ -19,7 +19,6 @@ class _InfoPageState extends State<InfoPage> {
 
   @override
   void initState() {
-    _adsService.createBannerAd();
     _adsService.createInterstitialAd();
     Future.delayed(const Duration(seconds: 5), () {
       _adsService.showInterstitialAd();
@@ -256,18 +255,6 @@ class _InfoPageState extends State<InfoPage> {
                         ),
                       ]),
                 ),
-                /// Unity Ads ///
-                Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width,
-                  child: UnityBannerAd(
-                    placementId: 'Banner_Android',
-                    onLoad: (placementId) => print('Banner loaded: $placementId'),
-                    onClick: (placementId) => print('Banner clicked: $placementId'),
-                    onShown: (placementId) => print('Banner shown: $placementId'),
-                    onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
-                  ),
-                )
               ],
             ),
           ],

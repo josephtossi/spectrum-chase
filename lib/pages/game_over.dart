@@ -23,7 +23,6 @@ class _GameOverState extends State<GameOver> {
   @override
   void initState() {
     super.initState();
-    adsService.createBannerAd();
     adsService.createInterstitialAd();
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
