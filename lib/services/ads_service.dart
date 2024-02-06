@@ -49,8 +49,12 @@ class AdsService {
           UnityAds.showVideoAd(
             placementId: 'Rewarded_Android4',
             onStart: (placementId) {},
-            onClick: (placementId) {},
-            onSkipped: (placementId) {},
+            onClick: (placementId) {
+              doneFunction();
+            },
+            onSkipped: (placementId) {
+              doneFunction();
+            },
             onComplete: (placementId) {
               doneFunction();
             },

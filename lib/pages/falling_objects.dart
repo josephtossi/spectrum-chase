@@ -20,6 +20,7 @@ class FallingObjectsPage extends StatefulWidget {
 double objectSpeed = 5.5;
 
 class _FallingObjectsPageState extends State<FallingObjectsPage> {
+  bool loadingAd = false;
   bool showInstructions = false;
   bool showAd = false;
   bool isPaused = false;
@@ -724,6 +725,9 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                     onTap: () {
                                       setState(() {
                                         try {
+                                          setState(() {
+                                            loadingAd = true;
+                                          });
                                           advancedPlayer.pause();
                                           adsService.createRewardedAd(
                                             loadAd: true,
@@ -731,6 +735,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                             setState(() {
                                               objectSpeed = 5.5;
                                               advancedPlayer.resume();
+                                              loadingAd = false;
                                               fallingObjects.clear();
                                               isPaused = false;
                                               showAd = false;
@@ -757,7 +762,7 @@ class _FallingObjectsPageState extends State<FallingObjectsPage> {
                                         child: Padding(
                                           padding: const EdgeInsets.all(14.0),
                                           child: Text(
-                                            'Watch Ad',
+                                            loadingAd ? 'Loading Ad' : 'Watch Ad',
                                             textAlign: TextAlign.center,
                                             style: GoogleFonts.raleway(
                                                 textStyle: Theme.of(context)

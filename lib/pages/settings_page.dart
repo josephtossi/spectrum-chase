@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:spectrum_chase/constants.dart';
 import 'package:spectrum_chase/my_behavior.dart';
 import 'package:spectrum_chase/services/ads_service.dart';
-import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 double musicVolume = 1;
 double effectsVolume = 1;
@@ -25,6 +22,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   /// variables for ads ///
+  bool loadingAd = false;
   AdsService _adsService = AdsService();
   static const _insets = 16.0;
   bool showAd = false;
@@ -664,11 +662,15 @@ class _SettingsPageState extends State<SettingsPage> {
                                 onTap: () {
                                   setState(() {
                                     try {
+                                      setState(() {
+                                        loadingAd = true;
+                                      });
                                       _adsService.createRewardedAd(
                                           loadAd: true,
                                           doneFunction: () {
                                             setState(() {
                                               onPressCallback();
+                                              loadingAd = false;
                                               showAd = false;
                                             });
                                           });
@@ -693,7 +695,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(14.0),
                                       child: Text(
-                                        'Watch Ad',
+                                        loadingAd ? 'Loading Ad' : 'Watch Ad',
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.raleway(
                                             textStyle: Theme.of(context)
